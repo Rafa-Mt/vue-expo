@@ -8,7 +8,9 @@ import logo from '@/assets/logo.svg';
 <template>
     <aside class="sidebar">
         <div class="heading">
-            <img :src="logo" alt="Vue logo" class="logo" />
+            <RouterLink to="/" class="img-link">
+                <img :src="logo" alt="Vue logo" class="logo" />
+            </RouterLink>
             <h1 class="sidebar-heading">Vue 3 Expo</h1>
         </div>
         <nav>
@@ -24,6 +26,7 @@ import logo from '@/assets/logo.svg';
 </template>
 
 <style scoped>
+
 .heading {
     display: flex;
     align-items: center;

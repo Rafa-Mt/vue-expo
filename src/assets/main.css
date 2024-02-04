@@ -53,3 +53,7 @@ code {
     border-radius: 5px;
     padding: 10px;
 }
+.img-link {
+    all: unset;
+    cursor: pointer;
+}
