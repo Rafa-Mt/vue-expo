@@ -17,10 +17,6 @@ import { onBeforeRouteUpdate } from 'vue-router';
         instance.proxy.$forceUpdate();
     });
 
-    
-
-
-
 </script>
 
 <template>

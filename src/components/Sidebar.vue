@@ -1,34 +1,66 @@
 <script setup>
 import { RouterLink } from 'vue-router';
 import slides from '@/router/slides';
+import logo from '@/assets/logo.svg';
 
 </script>
 
 <template>
     <aside class="sidebar">
+        <div class="heading">
+            <img :src="logo" alt="Vue logo" class="logo" />
+            <h1 class="sidebar-heading">Vue 3 Expo</h1>
+        </div>
         <nav>
-            <RouterLink v-for="slide in slides" :to="slide.path" >
-                {{ slide.name }}
+            <RouterLink  v-for="slide in slides" :to="slide.path">
+                <span
+                    class="sidebar-link"
+                    :class="{ active: slide.path === $route.path }"
+                >{{ slide.name }}</span>
+                
             </RouterLink>
         </nav>      
     </aside>
 </template>
 
 <style scoped>
-.sidebar {
-    background-color: #f0f0f0;
-    padding: 1rem;
-    width: 200px;
-    height: 100%;
-    top: 0;
-    left: 0;
+.heading {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+.logo {
+    width: 50px;
+    height: 50px;
+}
+.sidebar-heading {
+    font-size: 1.5rem;
+}
+aside {
+    border-right: 1px solid var(--color-border);
+    padding: 1.5rem;
+    width: 300px;
+    height: calc(100vh - 20px);
+    margin-top: 10px;
+    margin-bottom: 10px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    overflow-y: scroll;
+
+}
+.sidebar-link {
+    cursor: pointer;
+    font-size: .9rem;
+}
+.active {
+    font-weight: bold;
+    color: var(--primary-color)
 }
 nav {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 5px;
 }
 </style>
