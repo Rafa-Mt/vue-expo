@@ -30,7 +30,7 @@
         padding: 15px;
     }
     .grid-square:hover {
-        transform: scale(1.1);
+        transform: scale(0.95);
     }
     .white-text {
         color: white;
