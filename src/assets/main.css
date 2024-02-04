@@ -1,0 +1,43 @@
+@import './base.css';
+
+#app, html, body {
+    height: 100%;
+}
+
+#app {
+    display: flex;
+}
+h1 {
+    color: rgb(52, 111, 41);
+    font-size: 2em;
+}
+h2 {
+    color: rgb(28, 74, 16);
+    font-size: 1.5em;
+}
+h3 {
+    color: rgb(45, 45, 45);
+    font-size: 1.17em;
+}
+p {
+    color: rgb(45, 45, 45);
+    font-size: 1em;
+}
+article h1, article h2, article h3, article p, article ul{
+    width: 100%;
+}
+pre {
+    font-size: 1em;
+    color: white;
+    border-radius: 5px;
+    padding: 10px 0;
+    width: 90%;
+}
+code {
+    display: block;
+    background-color: rgb(31, 30, 30);
+    font-size: 1em;
+    color: white;
+    border-radius: 5px;
+    padding: 10px;
+}
