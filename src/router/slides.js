@@ -2,7 +2,19 @@ export default [
     {
         "name": "Intro",
         "path": "/intro",
-        "content": "# This is the intro page\nI am god"
+        "content": `
+        # Yo quiero a mis amigos
+        ## Y a mi familia
+
+        - Uno
+        - Dos
+        - Tres
+        - Cuatro
+
+        \`\`\`javascript
+        console.log('Hola mundo')
+        \`\`\`
+        `.split('\n').map((line) => line.trim()).join('\n')
     },
     {
         "name": "Installation",
