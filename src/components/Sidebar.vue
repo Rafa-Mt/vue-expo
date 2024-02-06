@@ -3,10 +3,11 @@ import { RouterLink } from 'vue-router';
 import slides from '@/router/slides';
 import logo from '@/assets/logo.svg';
 
+
 </script>
 
 <template>
-    <aside class="sidebar">
+    <aside class="sidebar" >
         <div class="heading">
             <RouterLink to="/" class="img-link">
                 <img :src="logo" alt="Vue logo" class="logo" />
@@ -51,8 +52,10 @@ aside {
     display: flex;
     flex-direction: column;
     overflow-y: scroll;
+    position: sticky;
 
 }
+
 .sidebar-link {
     cursor: pointer;
     font-size: .9rem;
@@ -61,6 +64,7 @@ aside {
     font-weight: bold;
     color: var(--primary-color)
 }
+
 nav {
     display: flex;
     flex-direction: column;

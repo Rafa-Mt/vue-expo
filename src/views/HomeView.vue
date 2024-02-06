@@ -2,6 +2,7 @@
 import logo from "@/assets/logo.svg"
 import uruLogo from '@/assets/uru-logo.png'
 import GridSquare from '@/components/GridSquare.vue'
+// import Reactividad from '../components/slides/Reactividad/Slide.mdx'
 
 
 
@@ -33,6 +34,7 @@ import GridSquare from '@/components/GridSquare.vue'
 
       </div>
     </div>
+    <Reactividad />
   </main>
 </template>
 

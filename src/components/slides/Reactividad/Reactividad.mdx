@@ -1,0 +1,65 @@
+import Counter from './Counter.vue'
+import ExampleWrapper from '../../ExampleWrapper.vue'
+import PageView from '../../../views/PageView.vue'
+
+<PageView>
+
+# Reactividad en Vue
+
+La reactividad se refiere a como el **estado** de nuestra aplicación se refleja en el DOM. En Vue, es muy sencillo crear y mantener estados reactivos.
+
+
+## ref
+
+En la API de composición de Vue, podemos usar la función ~ref~ para crear un estado reactivo. 
+
+```javascript
+import { ref } from 'vue'
+
+const count = ref(0)
+```
+
+~ref()~ es una función que recibe un valor y retorna un objeto con una propiedad ~value~ que contiene el valor que le pasamos como argumento. 
+
+```javascript
+
+console.log(count.value) // 0
+console.log(count) // { value: 0 }
+
+```
+
+En un template, podemos acceder al valor de ~count~ de la siguiente manera:
+
+```html
+<template>
+  <div>
+    <p>{{ count }}</p>
+  </div>
+</template>
+```
+Noten que no es necesario acceder a ~count.value~ en el template, Vue se encarga de hacerlo por nosotros.
+
+Podemos mutar directamente el estado en el template. Por ejemplo, usando eventos:
+
+```vue
+<script setup>
+import { ref } from 'vue'
+
+const count = ref(0)
+
+</script>
+
+<template>
+  <button @click="count++">
+    # de clicks: {{ count }}
+  </button>
+</template>
+```
+
+Y como resultado tenemos:
+
+<ExampleWrapper>
+  <Counter/>
+</ExampleWrapper>
+
+</PageView>

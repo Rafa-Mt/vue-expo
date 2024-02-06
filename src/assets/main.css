@@ -1,12 +1,14 @@
 @import './base.css';
 
 #app, html, body {
-    height: 100%;
     background-color: var(--color-background);
 }
 
 #app {
     display: flex;
+}
+strong {
+    font-weight: bold;
 }
 h1 {
     color: var(--primary-color);
@@ -38,14 +40,18 @@ a:hover {
 article h1, article h2, article h3, article p, article ul{
     width: 100%;
 }
+code {
+    background-color: #adadad;
+    color: rgb(65, 65, 65)
+}
 pre {
     font-size: 1em;
     color: white;
     border-radius: 5px;
     padding: 10px 0;
-    width: 90%;
+    width: 100%;
 }
-code {
+pre code {
     display: block;
     background-color: rgb(31, 30, 30);
     font-size: 1em;
@@ -53,7 +59,18 @@ code {
     border-radius: 5px;
     padding: 10px;
 }
+
 .img-link {
     all: unset;
     cursor: pointer;
+}
+
+/* Muy mala practica, solo lo hacemos porque MDX/Vue no soporta codigo inline */
+del { 
+    all: unset;
+    background-color: #d3d3d3;
+    color:#2f2f2f;
+    padding: 0 5px;
+    border-radius: 1px;
+    font-family: monospace;
 }
