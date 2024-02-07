@@ -6,4 +6,115 @@ export default [
         "path": "/reactividad",
         "component": Reactividad,
     },
+    {
+        "name": "Reactividad",
+        "path": "/reactividad",
+        "component": Reactividad,
+    },
+    {
+        "name": "Reactividad",
+        "path": "/reactividad",
+        "component": Reactividad,
+    },
+    {
+        "name": "Reactividad",
+        "path": "/reactividad",
+        "component": Reactividad,
+    },
+    {
+        "name": "Reactividad",
+        "path": "/reactividad",
+        "component": Reactividad,
+    },
+    {
+        "name": "Reactividad",
+        "path": "/reactividad",
+        "component": Reactividad,
+    },
+    {
+        "name": "Reactividad",
+        "path": "/reactividad",
+        "component": Reactividad,
+    },
+    {
+        "name": "Reactividad",
+        "path": "/reactividad",
+        "component": Reactividad,
+    },
+    {
+        "name": "Reactividad",
+        "path": "/reactividad",
+        "component": Reactividad,
+    },
+    {
+        "name": "Reactividad",
+        "path": "/reactividad",
+        "component": Reactividad,
+    },
+    {
+        "name": "Reactividad",
+        "path": "/reactividad",
+        "component": Reactividad,
+    },
+    {
+        "name": "Reactividad",
+        "path": "/reactividad",
+        "component": Reactividad,
+    },
+    {
+        "name": "Reactividad",
+        "path": "/reactividad",
+        "component": Reactividad,
+    },
+    {
+        "name": "Reactividad",
+        "path": "/reactividad",
+        "component": Reactividad,
+    },
+    {
+        "name": "Reactividad",
+        "path": "/reactividad",
+        "component": Reactividad,
+    },
+    {
+        "name": "Reactividad",
+        "path": "/reactividad",
+        "component": Reactividad,
+    },
+    {
+        "name": "Reactividad",
+        "path": "/reactividad",
+        "component": Reactividad,
+    },
+    {
+        "name": "Reactividad",
+        "path": "/reactividad",
+        "component": Reactividad,
+    },
+    {
+        "name": "Reactividad",
+        "path": "/reactividad",
+        "component": Reactividad,
+    },
+    {
+        "name": "Reactividad",
+        "path": "/reactividad",
+        "component": Reactividad,
+    },
+    {
+        "name": "Reactividad",
+        "path": "/reactividad",
+        "component": Reactividad,
+    },
+    {
+        "name": "Reactividad",
+        "path": "/reactividad",
+        "component": Reactividad,
+    },
+    {
+        "name": "Reactividad",
+        "path": "/reactividad",
+        "component": Reactividad,
+    },
+    
 ]
