@@ -5,6 +5,7 @@ import vue from '@vitejs/plugin-vue'
 import mdx from '@mdx-js/rollup'
 import { babel } from '@rollup/plugin-babel'
 import remarkGfm from 'remark-gfm'
+import torchlight from 'remark-torchlight' 
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -13,7 +14,8 @@ export default defineConfig({
     mdx({
       jsx: true,
       remarkPlugins: [
-          remarkGfm
+          remarkGfm,
+          torchlight
       ]
     }),
     babel({
