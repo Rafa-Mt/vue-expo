@@ -52,8 +52,8 @@ pre {
    padding: 10px;
    margin: 20px 0;
 }
-.line-number {
-    margin-right: 10px;
+code {
+    border-radius: 5px;
 }
 
 .img-link {
