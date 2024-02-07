@@ -17,7 +17,12 @@ const count = ref(0)
         padding: 5px;
         margin: 5px;
         border-radius: 5px;
-        background-color: #cfcfcf;
+        background-color: #e2e2e2;
         border: 1px solid var(--color-border);
+        cursor: pointer;
+        transition: all .2s ease;
+    }
+    button:hover {
+      background-color: #f6cece;
     }
 </style>

@@ -12,21 +12,28 @@ strong {
 }
 h1 {
     color: var(--primary-color);
-    font-size: 2em;
+    font-size: 2.5em;
     font-weight: bold;
+    margin-top: 15px;
+    margin-bottom: 10px;
 }
 h2 {
     color: var(--secondary-color);
-    font-size: 1.5em;
+    font-size: 1.8em;
     font-weight: bold;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 h3 {
     color: var(--color-heading);
-    font-size: 1.17em;
+    font-size: 1.5em;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 p {
     color: var(--color-text);
-    font-size: 1em;
+    font-size: 1.2em;
+    margin-top: 10px;
 }
 a {
     color: var(--color-text);
@@ -40,24 +47,13 @@ a:hover {
 article h1, article h2, article h3, article p, article ul{
     width: 100%;
 }
-code {
-    background-color: #adadad;
-    color: rgb(65, 65, 65)
-}
 pre {
-    font-size: 1em;
-    color: white;
-    border-radius: 5px;
-    padding: 10px 0;
-    width: 100%;
+   border-radius: 5px;
+   padding: 10px;
+   margin: 20px 0;
 }
-pre code {
-    display: block;
-    background-color: rgb(31, 30, 30);
-    font-size: 1em;
-    color: white;
-    border-radius: 5px;
-    padding: 10px;
+.line-number {
+    margin-right: 10px;
 }
 
 .img-link {
@@ -67,10 +63,11 @@ pre code {
 
 /* Muy mala practica, solo lo hacemos porque MDX/Vue no soporta codigo inline */
 del { 
+    font-size: 1em;
     all: unset;
-    background-color: #d3d3d3;
-    color:#2f2f2f;
+    background-color: #e8e8e8;
+    color: var(--primary-color);
     padding: 0 5px;
-    border-radius: 1px;
+    border-radius: 2px;
     font-family: monospace;
 }

@@ -9,9 +9,9 @@ import PageView from '../../../views/PageView.vue'
 La reactividad se refiere a como el **estado** de nuestra aplicación se refleja en el DOM. En Vue, es muy sencillo crear y mantener estados reactivos.
 
 
-## ref
+## ~ref()~
 
-En la API de composición de Vue, podemos usar la función ~ref~ para crear un estado reactivo. 
+En la API de composición de Vue, podemos usar la función ~ref()~ para crear un estado reactivo. 
 
 ```javascript
 import { ref } from 'vue'
@@ -22,15 +22,13 @@ const count = ref(0)
 ~ref()~ es una función que recibe un valor y retorna un objeto con una propiedad ~value~ que contiene el valor que le pasamos como argumento. 
 
 ```javascript
-
 console.log(count.value) // 0
 console.log(count) // { value: 0 }
-
 ```
 
 En un template, podemos acceder al valor de ~count~ de la siguiente manera:
 
-```html
+```vue
 <template>
   <div>
     <p>{{ count }}</p>
