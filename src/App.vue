@@ -8,7 +8,7 @@ import Sidebar from './components/Sidebar.vue'
     <Sidebar 
         :open="true"
     />
-    <RouterView :key="$route.name" />
+    <router-view :key="$route.fullPath" />
 
 
 </template>

@@ -4,6 +4,8 @@ import Awrap from "./Awrap.vue";
 
 <PageView>
 
+# Lifecycle Hooks
+
 ## **onMounted**
 
   
@@ -35,7 +37,6 @@ Este hook es esencial cuando necesitas realizar operaciones que dependen del DOM
 
   
 
----
 
 
 ## **onUpdated**
@@ -68,7 +69,6 @@ Puedes utilizar este hook para manipular el DOM después de que el componente se
 
   
 
----------------  
 
 ## **onUnmounted**
 
@@ -94,7 +94,6 @@ Puedes utilizar este hook para realizar tareas de limpieza que deben llevarse a 
 
   
 
----
 
   
 
@@ -113,7 +112,6 @@ onBeforeMount(() => {
 </script>
 ```
 
----
 
 ## **onBeforeUpdate**
 
@@ -145,7 +143,6 @@ Puedes utilizar este hook para realizar operaciones como comparar datos antes y 
 
   
 
----
 
 ## **onBeforeUnmount**
 
@@ -195,7 +192,6 @@ Puedes utilizar este hook para limpiar tareas que ya no son necesarias, como can
 
   
 
----
 
 ## **onErrorCaptured**
 
@@ -230,8 +226,6 @@ El hook ~~onErrorCaptured~~ solo captura errores que ocurren durante la renderiz
 
   
   
-
----
 
   
 
@@ -271,7 +265,6 @@ Este hook es útil para depurar y comprender qué dependencias reactivas están 
 
   
 
----
 
 ## **onRenderTriggered**
 
@@ -306,7 +299,6 @@ Este hook es útil para comprender qué cambios en las dependencias reactivas es
 
   
 
----
 
 ## **onActivated**
 
@@ -341,7 +333,6 @@ Este hook es útil para realizar tareas específicas que deben ocurrir cuando un
 
   
 
----
 
   
 
@@ -377,7 +368,6 @@ Este hook es útil para realizar tareas específicas que deben ocurrir cuando un
 
   
 
----
 
   
   
@@ -417,7 +407,6 @@ onServerPrefetch(async () => {
 Este hook es útil para realizar operaciones de precarga de datos o de configuración específicas para el SSR antes de que el componente sea renderizado en el cliente. Es especialmente útil cuando se trabaja con aplicaciones Vue que utilizan renderizado del lado del servidor.
 
 
----
 
 ## Ejemplo
 

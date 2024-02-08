@@ -1,4 +1,4 @@
-import Counter from './Counter.vue'
+import Emocion from './Emocion.vue'
 import ExampleWrapper from '../../ExampleWrapper.vue'
 import PageView from '../../../views/PageView.vue'
 import { reactive } from 'vue'
@@ -67,12 +67,14 @@ Podemos mutar directamente el estado en el template. Por ejemplo, usando eventos
 <script setup>
 import { ref } from 'vue'
 
-const count = ref(0)
+const mensaje = ref("Hola")
+
 </script>
 
 <template>
-  <button @click="count++">
-    # de clicks: {{ count }}
+  <p>{{ mensaje }}</p>
+  <button @click="mensaje += '!'">
+    Dale mas emocion al mensaje
   </button>
 </template>
 ```
@@ -80,7 +82,7 @@ const count = ref(0)
 Y como resultado tenemos:
 
 <ExampleWrapper>
-  <Counter/>
+  <Emocion/>
 </ExampleWrapper>
 
 ## ~reactive()~
@@ -107,7 +109,7 @@ Los objetos reactivos son proxies, lo que permite a vue interceptar las mutacion
 
 ### Proxies reactivos
 
-Hay otras consideraciones a tener en cuenta al usar ~reactive()~ :
+Hay otras consideraciones a tener en cuenta al usar ~reactive()~:
 
 - Los objetos retornados por ~reactive()~ **no** son iguales a los objetos que le pasamos como argumento.
 
@@ -120,4 +122,17 @@ console.log(proxy === raw) // false
 - Mutar el objeto original no actualiza el DOM
 - ~reactive(proxy)~ retorna el mismo objeto
 
+### Limitaciones de ~reactive()~
+
+1. **Tipos limitados:** ~reactive()~ solo funciona con tipos compuestos y de colección (objetos, arrays, mapas, y sets). No puede usarse con tipos primitivos (números, strings, booleanos, etc).
+
+2. **No puede deestructurarse:** las propiedades primitivas de un objeto reactivo perderan su reactividad si se deestructuran.
+
+```javascript
+const state = reactive({ count: 0 })
+
+const { count } = state
+
+count++ // No afecta el estado original
+```
 </PageView>

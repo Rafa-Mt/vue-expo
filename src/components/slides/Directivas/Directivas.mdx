@@ -5,13 +5,13 @@ import Vfor from "./Vfor.vue";
 import Vmodel from "./Vmodel.vue";
 
 <PageView>
-## Directivas de Vue
+# Directivas de Vue
 
 Las directivas son atributos especiales con el prefijo ~v-~. El trabajo de una directiva es aplicar reactivamente actualizaciones al DOM cuando cambia el valor de su expresion.
 
-# Directivas Basicas
+## Directivas Basicas
 
-## ~v-bind~
+### ~v-bind~
 
 ~v-bind~ o por su forma acortada ~:~, es una de las directivas mas utilizadas y populares de Vue. Esta permite enlazar una variable de Vue con un atributo especifico de una etiqueta HTML.
 
@@ -29,11 +29,11 @@ const someText = "Hello";
 
 Como se puede observar anteriormente en el ejemplo se hace uso de ~v-bind~ para enlazar la variable **someText** al parrafo.
 
-## ~v-html~
+### ~v-html~
 
 Esta directiva se encarga de actualizar el HTML interno del elemento. El contenido de ~v-html~ se inserta como HTML simple, es decir la **template syntax** de Vue no se procesara.
 
-```Example
+```html
 <template>
   <div v-html="html"></div>
 </template>
@@ -43,9 +43,9 @@ Esta directiva se encarga de actualizar el HTML interno del elemento. El conteni
 </script>
 ```
 
-# Directivas Condicionales
+## Directivas Condicionales
 
-## ~v-if~
+### ~v-if~
 
 La directiva ~v-if~ es utilizada para renderizar condicionalmente algunos elementos segun el valor de la variable a la que este enlazada.
 
@@ -66,7 +66,7 @@ const toggle = ref(true);
 
 En el ejemplo anterior, se asigna una variable que es una ~ref()~ inicializada en ~true~ y mientras esta variable se mantenga en ese estado, se mostrara el texto, pero... que pasa si el valor de esa variable cambiara?.
 
-## ~v-else~
+### ~v-else~
 
 Para responder la pregunta anterior, se presenta la directiva ~v-else~, esta directiva permite renderizar otro bloque de elementos en el momento que la variable cambie de valor, es decir, cuando ~toggle~ cambie a falso se renderizara otro elemento determinado.
 
@@ -89,7 +89,7 @@ Ahora cuando ~toggle~ adopte el valor de ~false~ se mostrar en la pantalla ~No g
 
 ## Directivas para Eventos
 
-## ~v-on~ o ~@~
+### ~v-on~ o ~@~
 
 La directiva ~v-on~, se emplea para escuchar los eventos del DOM y ejecutar codigo JavaScript cuando se activan. El valor de esta directiva puede ser inline o por metodo.
 
@@ -160,7 +160,7 @@ Los Modificadores de Evento son:
 <form @submit.prevent="onSumit"></form>
 ```
 
-## ~v-shown~
+### ~v-shown~
 
 Esta directiva tambien realiza un renderizado condicional, solamente que este a diferencia del ~v-if~ solamente altera el ~display~ segun el valor de la variable de referencia (true, false)
 
@@ -168,9 +168,9 @@ Esta directiva tambien realiza un renderizado condicional, solamente que este a 
 <h1 v-shown="show">Hello!</h1>
 ```
 
-# Directivas repetitivas
+## Directivas repetitivas
 
-## ~v-for~
+### ~v-for~
 
 La directiva ~v-for~ se emplea para representar una lista de elementos, esta directiva requiere de una sintaxis especial en forma de ~item in items~, en donde ~items~ es la lista de datos origen e ~item~ es un alias para el elemento de la lista sobre el que se quiere iterar. Esta directiva tambien admite un segundo parametro para para el indice del elemento actual.
 
@@ -194,9 +194,9 @@ const items = ref([{ message: "Foo" }, { message: "Bar" }]);
   <Vfor />
 </ExampleWrapper>
 
-# Directiva para Inputs
+## Directiva para Inputs
 
-## ~v-model~
+### ~v-model~
 
 Esta directiva permite sincronizar el contenido de una variable con el contenido que tenga un elemento HTML ~input~ en su atributo **value**, y esta directiva es aplicable a una variedad de tipos de input:
 

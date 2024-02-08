@@ -1,0 +1,112 @@
+import ExampleWrapper from "../../ExampleWrapper.vue";
+import PageView from "../../../views/PageView.vue"
+import Question from "./Question.vue"
+import { watch } from "vue";
+
+<PageView>
+# Watchers
+
+Si queremos producir efectos secundarios cuando un valor reactivo cambia (como cambiar el DOM, o modificar otro valor reactivo), podemos usar watchers. Nos permiten ejecutar funciones cuando cambia el estado.
+
+La forma mas basica del watcher es:
+
+```javascript
+watch(valorReactivo, (nuevoValor, valorAnterior) => {
+    // Hacer algo
+})
+```
+
+El segundo parametro puede ser una función asíncrona, por lo que es posible hacer llamadas a APIs o realizar operaciones asíncronas.
+
+```html
+<script setup>
+import { ref, watch } from 'vue'
+
+const question = ref('')
+const answer = ref('Espero tu pregunta')
+const loading = ref(false)
+
+watch(question, async (newQuestion, oldQuestion) => {
+  if (newQuestion.includes('?')) {
+    loading.value = true
+    answer.value = 'Pensando...'
+
+    try {
+      const res = await fetch('https://yesno.wtf/api')
+      answer.value = (await res.json()).answer
+    } catch (error) {
+      answer.value = 'Error! Could not reach the API. ' + error
+    } finally {
+      loading.value = false
+    }
+  }
+})
+
+</script>
+
+<template>
+  <p>
+    Haz una pregunta de sí o no:
+    <input v-model="question" :disabled="loading" />
+  </p>
+  <p>{{ answer }}</p>
+</template>
+```
+Que resulta en esto:
+
+<ExampleWrapper>
+    <Question />
+</ExampleWrapper>
+
+## Múltiples dependencias
+
+Al primer argumento de ~watch~ se le puede pasar un arreglo de valores reactivos.
+
+```javascript
+watch(
+    [valorReactivo1, valorReactivo2], 
+    ([nuevo1, nuevo2], [viejo1, viejo2]) => {
+    // Hacer algo
+})
+```
+
+
+## Watchers ansiosos
+
+Por defecto, los ~watch~ es lazy, lo que significa que espera a que el valor cambie y luego ejecuta el watcher. Si queremos que el watcher se ejecute inmediatamente, podemos usar el modificador ~\{ immediate: true \}~.:
+
+```javascript 
+watch(
+  valorReactivo,
+  (nuevoValor, valorAnterior) => {
+    // Se ejecuta inmediatamente, 
+    // y luego cada vez que el valor cambie
+  },
+  { immediate: true }
+)
+```
+
+## ~watchEffect~
+
+Es similar a ~watch~, pero no necesita que se le pasen explícitamente las dependencias. Además, son inmediatos por defecto.
+
+Con ~watchEffect~, podemos simplificar esto:
+
+```javascript
+watch(producto, 
+    async () => {
+        await fetch(`https://api.com/products/{producto.value}`)
+        // Hacer algo    
+}, 
+{ immediate: true })
+```
+A esto:
+
+```javascript
+watchEffect(async () => {
+    await fetch('https://api.com/products/' + producto.value)
+    // Hacer algo
+})
+```
+
+</PageView>

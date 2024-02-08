@@ -18,7 +18,7 @@ const toggle = ref(true);
 <style scoped>
 button {
   background: transparent;
-  color: aliceblue;
+  color: var(--color-text);
   border: 1px solid gray;
   border-radius: 10px;
   cursor: pointer;
@@ -29,7 +29,6 @@ button {
 }
 
 button:hover {
-  background: aliceblue;
-  color: black;
+  background-color: #c6fbd9;
 }
 </style>

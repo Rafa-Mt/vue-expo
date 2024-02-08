@@ -13,7 +13,7 @@ Vue es capaz de compilar estas plantillas (Templates) en código de Javascript a
 
 Parte de este Template Syntax son los data binds, que optimizan aún más la forma que se usa Vue. Para entenderlo, la forma más básica de data binding es la interpolación de texto:
 
-```vue
+```html
     <script setup>
         const msg = "Hola Mundo";
     </script>
@@ -27,7 +27,7 @@ Sin embargo, no es solo texto que puede ser mostrado sino también más propieda
 
 En este caso se quiere mostrar un HTML, pero para ajustarlo se debe usar la directiva ~v-html~, un atributo especial de Vue que le da un comportamiento especial reactivo al DOM renderizado.
 
-```vue
+```html
     <script setup>
             const rawHtml = '<span style="color: red">This should be red.</span>';
         </script>
@@ -45,19 +45,19 @@ En este caso se quiere mostrar un HTML, pero para ajustarlo se debe usar la dire
 
 Sin embargo, estas sintáxis de plantilla de bigotes ~{{}}~ no está permitida dentro de atributos HTML, para lo que se usa la directiva ~v-bind~.
 
-```vue
+```html
     <div v-bind:id="dynamicId"></div>
 ```
 
 En este caso, se ve que la directiva ~v-bind~ hace que Vue mantenga el atributo ~id~ del elemento sincronizado con la propiedad ~dynamicId~ del componente. Aún con esto, ~v-bind~ es tan común que se tiene una forma más corta de escribirlo, como solo ~:~, de la siguiente manera:
 
-```vue
+```html
     <div :id="dynamicId"></div>
 ```
 
 También se puede utilizar esta sintáxis para atributos booleanos, siendo ~disabled~ uno de los más usados:
 
-```vue
+```html
     <button :disabled="isButtonDisabled">Button</button>
 ```
 
@@ -73,12 +73,12 @@ Casi no tiene límites en este apartado, incluso se le pueden asignar, por ejemp
     }
 ```
 
-```vue
+```html
     <div v-bind="objectOfAttrs"></div>
 ```
 #### Únicamente expresiones:
 
-```vue
+```html
     {{ number + 1 }}
 
     {{ ok ? 'YES' : 'NO' }}
@@ -90,7 +90,7 @@ Casi no tiene límites en este apartado, incluso se le pueden asignar, por ejemp
 
 #### Llamado a Funciones:
 
-```vue
+```html
     <time :title="toTitleDate(date)" :datetime="date">
     {{ formatDate(date) }}
     </time>

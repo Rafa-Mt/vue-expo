@@ -42,17 +42,17 @@
 <style scoped>
   button {
     border-radius: 8px;
-    border: 1px solid transparent;
+    border: 1px solid var(--color-border);
     padding: 0.6em 1.2em;
     font-size: 1em;
     font-weight: 500;
     font-family: inherit;
-    background-color: #205a33;
+    background-color: var(--color-background-soft);
     cursor: pointer;
-    transition: border-color 0.25s;
+    transition: all 0.25s ease;
   }
   button:hover {
-    border-color: #646cff;
+    background-color: #bbbffa;
   }
   button:focus,
   button:focus-visible {

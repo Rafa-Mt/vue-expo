@@ -1,13 +1,14 @@
 <script setup>
 import { ref } from 'vue'
 
-const count = ref(0)
+const mensaje = ref("Hola")
 
 </script>
 
 <template>
-  <button @click="count++">
-    # de clicks: {{ count }}
+  <p>{{ mensaje }}</p>
+  <button @click="mensaje += '!'">
+    Dale mas emocion al mensaje
   </button>
 </template>
 
@@ -21,6 +22,9 @@ const count = ref(0)
         border: 1px solid var(--color-border);
         cursor: pointer;
         transition: all .2s ease;
+    }
+    p {
+      margin: 5px;
     }
     button:hover {
       background-color: #f6cece;

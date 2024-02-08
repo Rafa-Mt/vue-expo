@@ -3,6 +3,7 @@
 
 #app, html, body {
     background-color: var(--color-background);
+    font-size: 16px;
 }
 
 #app {
@@ -36,6 +37,12 @@ p {
     color: var(--color-text);
     font-size: 1.2em;
     margin-top: 10px;
+}
+ul {
+    color: var(--color-text);
+    font-size: 1.2em;
+    margin-top: 10px;
+    margin-left: 20px;
 }
 a {
     color: var(--color-text);

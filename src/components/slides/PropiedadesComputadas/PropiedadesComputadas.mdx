@@ -1,0 +1,79 @@
+import ExampleWrapper from "../../ExampleWrapper.vue";
+import PageView from "../../../views/PageView.vue";
+import MessageReverse from "./MessageReverse.vue";
+
+<PageView>
+# Propiedades computadas
+
+Las propiedades computadas son propiedades que se calculan a partir de otras. Son útiles para realizar cálculos o transformaciones de datos.
+
+
+## ~computed()~
+
+Es la funcion que se utiliza para definir propiedades computadas.
+
+Sin ~~computed()~~, las expresiones pueden volverse complicadas
+
+```html
+<template>
+  <h1> Verificador de edad </h1>
+  <p>{{ edad > 18 ? 'Eres mayor de edad' : 'Eres menor de edad' }} </p>
+</template>
+
+```
+
+Con ~~computed()~~, podemos ordenar la logica y mejorar la legibilidad del código.
+
+Una propiedad computada es un objeto ~~ref~~. Para acceder a su valor en un script, debemos usar la propiedad ~~value~~. 
+
+```html
+<template>
+  <h1> Verificador de edad </h1>
+  <p>{{ status }} </p>
+</template>
+
+<script setup>
+    import { ref, computed } from 'vue'
+
+    const edad = ref(20)
+    const status = computed(() => {
+        return edad.value > 18 ? 'Eres mayor de edad' : 'Eres menor de edad'
+    })
+
+    console.log(status.value) // Eres mayor de edad
+    console.log(status) // { value: 'Eres mayor de edad' }
+</script>
+
+```
+
+Veamos otro ejemplo:
+
+```html
+<template>
+    <p>Ingrese su mensaje</p>
+    <input type="text" v-model="message">
+    <p>Mensaje en reversa: {{ reversedMessage }}</p>
+</template>
+
+<script setup>
+    import { ref, computed } from 'vue'
+    
+    const message = ref('Hola mundo!')
+
+    const reversedMessage = computed(() => 
+        message.value.split('').reverse().join('')
+    )
+</script>
+```
+
+<ExampleWrapper>
+    <MessageReverse />
+</ExampleWrapper>
+
+## Buenas prácticas
+
+- Las propiedades computadas no debería tener efectos secundarios
+
+- Tratar a las propiedades computadas como solo lectura
+
+</ PageView>
