@@ -12,4 +12,5 @@ export default [
     path: "/directivas",
     component: Directivas,
   },
+
 ];
