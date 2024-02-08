@@ -1,17 +1,42 @@
 import Counter from './Counter.vue'
 import ExampleWrapper from '../../ExampleWrapper.vue'
 import PageView from '../../../views/PageView.vue'
+import { reactive } from 'vue'
 
 <PageView>
 
-# Reactividad en Vue
+# Reactividad
 
-La reactividad se refiere a como el **estado** de nuestra aplicación se refleja en el DOM. En Vue, es muy sencillo crear y mantener estados reactivos.
+La reactividad se refiere a la habilidad de nuestra aplicacion de reflejar cambios en su **estado** en el DOM.
 
+En Javascript, los elementos del DOM no son reactivos por defecto. Si cambiamos el valor de una variable, debemos actualizar manualmente el DOM
+
+```html
+<div id="app">
+  <p id="cuenta"></p>
+  <button>Incrementar</button>
+</div>
+
+<script>
+  let count = 0
+  const p = document.getElementById('cuenta')
+  p.innerText = count
+  const button = document.querySelector('button')
+
+  button.addEventListener('click', () => {
+    count++
+    p.innerText = count // Debemos actualizar el DOM manualmente
+  })
+</script>
+``` 
+
+## Reactividad en Vue
+
+Vue es un framework reactivo: cuando cambia el estado de nuestra aplicacion, Vue se encarga de actualizar el DOM por nosotros.
 
 ## ~ref()~
 
-En la API de composición de Vue, podemos usar la función ~ref()~ para crear un estado reactivo. 
+Es la manera recomendada de declarar estado reactivo en Vue 3.
 
 ```javascript
 import { ref } from 'vue'
@@ -25,7 +50,6 @@ const count = ref(0)
 console.log(count.value) // 0
 console.log(count) // { value: 0 }
 ```
-
 En un template, podemos acceder al valor de ~count~ de la siguiente manera:
 
 ```html
@@ -58,5 +82,42 @@ Y como resultado tenemos:
 <ExampleWrapper>
   <Counter/>
 </ExampleWrapper>
+
+## ~reactive()~
+
+Es otra manera de declarar estado reactivo en Vue 3. ~reactive()~ es una función que recibe un objeto y retorna un objeto con las mismas propiedades, pero reactivas.
+
+```javascript
+import { reactive } from 'vue'
+
+const state = reactive({ count: 0 })
+```
+
+En un template, podemos acceder a las propiedades de ~state~ de la siguiente manera:
+
+```html
+<template>
+  <div>
+    <p>{{ state.count }}</p>
+  </div>
+</template>
+```
+
+Los objetos reactivos son proxies, lo que permite a vue interceptar las mutaciones y actualizar el DOM.
+
+### Proxies reactivos
+
+Hay otras consideraciones a tener en cuenta al usar ~reactive()~ :
+
+- Los objetos retornados por ~reactive()~ **no** son iguales a los objetos que le pasamos como argumento.
+
+```javascript
+const raw = {}
+const proxy = reactive(raw)
+
+console.log(proxy === raw) // false
+```
+- Mutar el objeto original no actualiza el DOM
+- ~reactive(proxy)~ retorna el mismo objeto
 
 </PageView>
