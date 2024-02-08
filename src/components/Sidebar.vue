@@ -12,7 +12,7 @@ import logo from '@/assets/logo.svg';
             <router-link to="/" class="img-link">
                 <img :src="logo" alt="Vue logo" class="logo" />
             </router-link>
-            <h1 class="sidebar-heading">Vue 3 Expo</h1>
+            <h1 class="sidebar-heading">Vue 3 express</h1>
         </div>
         <nav>
             <router-link  v-for="slide in slides" :to="slide.path">
