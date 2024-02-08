@@ -1,0 +1,99 @@
+import DirectiveHTMLSyntax from './DirectiveHTMLSyntax.vue'
+import ExampleWrapper from '../../ExampleWrapper.vue'
+import PageView from '../../../views/PageView.vue'
+
+<PageView>
+
+
+# Sintáxis de Plantillas (Template Syntax)
+
+Vue utiliza una sintáxis basada en HTML que permite al programador asignar el DOM renderizado a la data de la instancia del componente que está por debajo.
+
+Vue es capaz de compilar estas plantillas (Templates) en código de Javascript altamente optimizado con ayuda del sistema de reactividad.
+
+Parte de este Template Syntax son los data binds, que optimizan aún más la forma que se usa Vue. Para entenderlo, la forma más básica de data binding es la interpolación de texto:
+
+```vue
+    <script setup>
+        const msg = "Hola Mundo";
+    </script>
+
+    <template>
+        <span> Mensaje: {{ msg }}</span>
+    </template>
+```
+
+Sin embargo, no es solo texto que puede ser mostrado sino también más propiedades y atributos.
+
+En este caso se quiere mostrar un HTML, pero para ajustarlo se debe usar la directiva `v-html`, un atributo especial de Vue que le da un comportamiento especial reactivo al DOM renderizado.
+
+```vue
+    <script setup>
+            const rawHtml = '<span style="color: red">This should be red.</span>';
+        </script>
+
+        <template>
+            <p>Using text interpolation: {{ rawHtml }}</p>
+            <p>Using v-html directive: <span v-html="rawHtml"></span></p>
+        </template>
+```
+
+<ExampleWrapper>
+  <DirectiveHTMLSyntax/>
+</ExampleWrapper>
+
+
+Sin embargo, estas sintáxis de plantilla de bigotes {{}} no está permitida dentro de atributos HTML, para lo que se usa la directiva `v-bind`.
+
+```vue
+    <div v-bind:id="dynamicId"></div>
+```
+
+En este caso, se ve que la directiva `v-bind` hace que Vue mantenga el atributo `id` del elemento sincronizado con la propiedad `dynamicId` del componente. Aún con esto, `v-bind` es tan común que se tiene una forma más corta de escribirlo, como solo `:`, de la siguiente manera:
+
+```vue
+    <div :id="dynamicId"></div>
+```
+
+También se puede utilizar esta sintáxis para atributos booleanos, siendo `disabled` uno de los más usados:
+
+```vue
+    <button :disabled="isButtonDisabled">Button</button>
+```
+
+En este caso solo se incluirá si `isButtonDisabled` es verdadero, o está vacío. De resto, el atributo será omitido.
+
+Casi no tiene límites en este apartado, incluso se le pueden asignar, por ejemplo, múltiples atributos de un objeto, expresiones de Javascript, o hasta llamados a funciones; sin embargo, no permite declaraciones o control de flujos:
+
+#### Objeto de Javascript:
+```javascript
+    const objectOfAttrs = {
+    id: 'container',
+    class: 'wrapper'
+    }
+```
+
+```vue
+    <div v-bind="objectOfAttrs"></div>
+```
+#### Únicamente expresiones:
+
+```vue
+    {{ number + 1 }}
+
+    {{ ok ? 'YES' : 'NO' }}
+
+    {{ var a = 1 }}
+
+    {{ if (ok) { return message } }}
+```
+
+#### Llamado a Funciones:
+
+```vue
+    <time :title="toTitleDate(date)" :datetime="date">
+    {{ formatDate(date) }}
+    </time>
+```
+
+</PageView>
