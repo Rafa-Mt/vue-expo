@@ -1,0 +1,225 @@
+import ExampleWrapper from "../../ExampleWrapper.vue";
+import PageView from "../../../views/PageView.vue";
+import Vif from "./Vif.vue";
+import Vfor from "./Vfor.vue";
+import Vmodel from "./Vmodel.vue";
+
+<PageView>
+## Directivas de Vue
+
+Las directivas son atributos especiales con el prefijo ~v-~. El trabajo de una directiva es aplicar reactivamente actualizaciones al DOM cuando cambia el valor de su expresion.
+
+# Directivas Basicas
+
+## ~v-bind~
+
+~v-bind~ o por su forma acortada ~:~, es una de las directivas mas utilizadas y populares de Vue. Esta permite enlazar una variable de Vue con un atributo especifico de una etiqueta HTML.
+
+```javascript
+const someText = "Hello";
+```
+
+```html
+<template>
+  <div>
+    <p :title="someText"></p>
+  </div>
+</template>
+```
+
+Como se puede observar anteriormente en el ejemplo se hace uso de ~v-bind~ para enlazar la variable **someText** al parrafo.
+
+## ~v-html~
+
+Esta directiva se encarga de actualizar el HTML interno del elemento. El contenido de ~v-html~ se inserta como HTML simple, es decir la **template syntax** de Vue no se procesara.
+
+```Example
+<template>
+  <div v-html="html"></div>
+</template>
+
+<script setup>
+  const html = `<span>Buenos dias</span>`;
+</script>
+```
+
+# Directivas Condicionales
+
+## ~v-if~
+
+La directiva ~v-if~ es utilizada para renderizar condicionalmente algunos elementos segun el valor de la variable a la que este enlazada.
+
+```javascript
+import { ref } from "vue";
+
+const toggle = ref(true);
+```
+
+```html
+<template>
+  <div v-if="toggle">
+    <p>Aprendamos Vue!</p>
+    <p></p>
+  </div>
+</template>
+```
+
+En el ejemplo anterior, se asigna una variable que es una ~ref()~ inicializada en ~true~ y mientras esta variable se mantenga en ese estado, se mostrara el texto, pero... que pasa si el valor de esa variable cambiara?.
+
+## ~v-else~
+
+Para responder la pregunta anterior, se presenta la directiva ~v-else~, esta directiva permite renderizar otro bloque de elementos en el momento que la variable cambie de valor, es decir, cuando ~toggle~ cambie a falso se renderizara otro elemento determinado.
+
+Siguiendo con el ejemplo anterior:
+
+```html
+<template>
+  <div v-if="toggle">
+    <p>Aprendamos Vue!</p>
+    <p></p>
+  </div>
+
+  <div v-else>
+    <p>No gracias...</p>
+  </div>
+</template>
+```
+
+Ahora cuando ~toggle~ adopte el valor de ~false~ se mostrar en la pantalla ~No gracias...~
+
+## Directivas para Eventos
+
+## ~v-on~ o ~@~
+
+La directiva ~v-on~, se emplea para escuchar los eventos del DOM y ejecutar codigo JavaScript cuando se activan. El valor de esta directiva puede ser inline o por metodo.
+
+- Valor inline:
+
+```html
+<button @click="alert("Hello, Frameworks Class")"></button>
+```
+
+- Valor por metodo:
+
+```html
+<button @click="sayHi"></button>
+```
+
+```javascript
+const name = ref("Frameworks Class");
+
+const sayHi = () => {
+  alert(`Hello, ${name.value}`);
+};
+```
+
+El resultado de ambas opciones sera el mismo, pero dependiendo de la logica que se quiera emplear segun el caso, una opcion sera mas optima que otra.
+Usemos un evento en un ejemplo practica, demostremos el renderizado condicional mediante el uso de eventos, tomando el ejemplo anterior:
+
+```html
+<template>
+  <div v-if="toggle">
+    <p>Aprendamos Vue!</p>
+    <p></p>
+  </div>
+
+  <div v-else>
+    <p>No gracias...</p>
+  </div>
+
+  <button @click="toggle = !toggle">Cambio</button>
+</template>
+```
+
+```javascript
+import { ref } from "vue";
+
+const toggle = ref(true);
+```
+
+<ExampleWrapper>
+  <Vif />
+</ExampleWrapper>
+
+## Modificadores de Eventos
+
+Es una necesidad comun llamar event.preventDefault() dentro de los metodos de los eventos. Aunque podemos hacer esto facilmente dentro de los metodos, seria mejor si los metodos pudieran ser puramente sobre logica de datos en lugar de tener que lidiar con detalles de eventos DOM.
+
+Para solucionar esto, Vue proporciona **Modificadores de Eventos**, estos son escritos como sufijos escritos despues del nombre del evento antecedidos por un punto.
+
+Los Modificadores de Evento son:
+
+- .stop
+- .prevent
+- .self
+- .capture
+- .once
+- .passive
+
+```html
+<form @submit.prevent="onSumit"></form>
+```
+
+## ~v-shown~
+
+Esta directiva tambien realiza un renderizado condicional, solamente que este a diferencia del ~v-if~ solamente altera el ~display~ segun el valor de la variable de referencia (true, false)
+
+```html
+<h1 v-shown="show">Hello!</h1>
+```
+
+# Directivas repetitivas
+
+## ~v-for~
+
+La directiva ~v-for~ se emplea para representar una lista de elementos, esta directiva requiere de una sintaxis especial en forma de ~item in items~, en donde ~items~ es la lista de datos origen e ~item~ es un alias para el elemento de la lista sobre el que se quiere iterar. Esta directiva tambien admite un segundo parametro para para el indice del elemento actual.
+
+Por ejemplo:
+
+```javascript
+import { ref } from "vue";
+
+const items = ref([{ message: "Foo" }, { message: "Bar" }]);
+```
+
+```html
+<template>
+  <ul>
+    <li v-for="(item, index) in items">{{ index }} - {{ item.message }}</li>
+  </ul>
+</template>
+```
+
+<ExampleWrapper>
+  <Vfor />
+</ExampleWrapper>
+
+# Directiva para Inputs
+
+## ~v-model~
+
+Esta directiva permite sincronizar el contenido de una variable con el contenido que tenga un elemento HTML ~input~ en su atributo **value**, y esta directiva es aplicable a una variedad de tipos de input:
+
+- textarea
+- select
+- radios
+- check
+
+Un ejemplo de uso de este seria:
+
+```javascript
+import { ref } from "vue";
+
+const my_text = ref("");
+```
+
+```html
+<p>El mensaje es: {{ my_text }}</p>
+<input v-model="my_text" placeholder="Edit me" />
+```
+
+<ExampleWrapper>
+  <Vmodel />
+</ExampleWrapper>
+
+</PageView>
