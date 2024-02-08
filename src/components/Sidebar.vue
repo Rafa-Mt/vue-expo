@@ -9,19 +9,19 @@ import logo from '@/assets/logo.svg';
 <template>
     <aside class="sidebar" >
         <div class="heading">
-            <RouterLink to="/" class="img-link">
+            <router-link to="/" class="img-link">
                 <img :src="logo" alt="Vue logo" class="logo" />
-            </RouterLink>
+            </router-link>
             <h1 class="sidebar-heading">Vue 3 Expo</h1>
         </div>
         <nav>
-            <RouterLink  v-for="slide in slides" :to="slide.path">
+            <router-link  v-for="slide in slides" :to="slide.path">
                 <span
                     class="sidebar-link"
                     :class="{ active: slide.path === $route.path }"
                 >{{ slide.name }}</span>
                 
-            </RouterLink>
+            </router-link>
         </nav>      
     </aside>
 </template>
@@ -46,13 +46,14 @@ aside {
     border-right: 1px solid var(--color-border);
     padding: 1.5rem;
     width: 300px;
-    height: calc(100vh - 20px);
-    margin-top: 10px;
-    margin-bottom: 10px;
+    height: 100vh;
+    height: 100dvh;
     display: flex;
     flex-direction: column;
     overflow-y: scroll;
+    position: -webkit-sticky;
     position: sticky;
+    top: 0;
 
 }
 
