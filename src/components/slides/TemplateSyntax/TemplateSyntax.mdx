@@ -25,7 +25,7 @@ Parte de este Template Syntax son los data binds, que optimizan aún más la for
 
 Sin embargo, no es solo texto que puede ser mostrado sino también más propiedades y atributos.
 
-En este caso se quiere mostrar un HTML, pero para ajustarlo se debe usar la directiva `v-html`, un atributo especial de Vue que le da un comportamiento especial reactivo al DOM renderizado.
+En este caso se quiere mostrar un HTML, pero para ajustarlo se debe usar la directiva ~v-html~, un atributo especial de Vue que le da un comportamiento especial reactivo al DOM renderizado.
 
 ```vue
     <script setup>
@@ -43,25 +43,25 @@ En este caso se quiere mostrar un HTML, pero para ajustarlo se debe usar la dire
 </ExampleWrapper>
 
 
-Sin embargo, estas sintáxis de plantilla de bigotes {{}} no está permitida dentro de atributos HTML, para lo que se usa la directiva `v-bind`.
+Sin embargo, estas sintáxis de plantilla de bigotes ~{{}}~ no está permitida dentro de atributos HTML, para lo que se usa la directiva ~v-bind~.
 
 ```vue
     <div v-bind:id="dynamicId"></div>
 ```
 
-En este caso, se ve que la directiva `v-bind` hace que Vue mantenga el atributo `id` del elemento sincronizado con la propiedad `dynamicId` del componente. Aún con esto, `v-bind` es tan común que se tiene una forma más corta de escribirlo, como solo `:`, de la siguiente manera:
+En este caso, se ve que la directiva ~v-bind~ hace que Vue mantenga el atributo ~id~ del elemento sincronizado con la propiedad ~dynamicId~ del componente. Aún con esto, ~v-bind~ es tan común que se tiene una forma más corta de escribirlo, como solo ~:~, de la siguiente manera:
 
 ```vue
     <div :id="dynamicId"></div>
 ```
 
-También se puede utilizar esta sintáxis para atributos booleanos, siendo `disabled` uno de los más usados:
+También se puede utilizar esta sintáxis para atributos booleanos, siendo ~disabled~ uno de los más usados:
 
 ```vue
     <button :disabled="isButtonDisabled">Button</button>
 ```
 
-En este caso solo se incluirá si `isButtonDisabled` es verdadero, o está vacío. De resto, el atributo será omitido.
+En este caso solo se incluirá si ~isButtonDisabled~ es verdadero, o está vacío. De resto, el atributo será omitido.
 
 Casi no tiene límites en este apartado, incluso se le pueden asignar, por ejemplo, múltiples atributos de un objeto, expresiones de Javascript, o hasta llamados a funciones; sin embargo, no permite declaraciones o control de flujos:
 
