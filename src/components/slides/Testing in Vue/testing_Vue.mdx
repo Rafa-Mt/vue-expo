@@ -1,0 +1,144 @@
+# Testing en Vue.js
+
+Las pruebas automatizadas ayudan a usted y su equipo a crear aplicaciones Vue complejas de forma rápida y confiable al prevenir retrocesos y fomentar la división de su aplicación en funciones, módulos, clases y componentes que puedan probarse.  es un método para verificar si al diseñar un producto digital este cumple con los requisitos esperados y se encuentra libre de errores y brechas.S
+
+En esta guía, cubriremos la terminología básica y brindaremos recomendaciones sobre qué herramientas elegir para su aplicación Vue 3. Hay una sección específica de Vue que cubre los componentes reutilizables. Vea Pruebas de componentes reutilizables a continuación para obtener más detalles.
+
+# Cuando comenzar a testear
+¡Comience a probar lo antes posible! Le recomendamos que empiece a escribir pruebas tan pronto como pueda. Cuanto más espere para agregar pruebas a su aplicación, más dependencias tendrá y más difícil será comenzar.
+
+## Tipos de testeos
+Al diseñar la estrategia de pruebas para tu aplicación Vue, debes aprovechar los siguientes tipos de pruebas:
+
+1. **Pruebas unitarias**: Verifican que las entradas a una función, clase o componente reutilizable específico produzcan la salida o efectos secundarios esperados.
+Aislan unidades de código individuales para pruebas independientes.
+Son más rápidas y fáciles de escribir que otros tipos de pruebas.
+Se ejecutan durante el desarrollo para garantizar que las unidades de código funcionen correctamente.
+
+2. **Pruebas de componentes**: Verifican que tu componente se monte, renderice, permita la interacción y se comporte como se espera.
+Importan más código que las pruebas unitarias, son más complejas y requieren más tiempo de ejecución. Prueban la funcionalidad del componente individual, incluyendo props, eventos, ranuras, estilos, clases y ciclos de vida. Se ejecutan durante el desarrollo para garantizar que los componentes funcionen correctamente entre sí.
+3. **Pruebas de extremo a extremo:** Verifican características que abarcan varias páginas y realizan solicitudes de red reales a tu aplicación Vue construida para producción.
+A menudo implican configurar una base de datos u otro backend.
+Prueban el flujo general de la aplicación y la interacción con el servidor.
+Se ejecutan antes de la implementación para garantizar que la aplicación funcione correctamente como un todo.
+Cada tipo de prueba juega un papel importante en la estrategia de pruebas de tu aplicación y te protegerá contra diferentes tipos de problemas:
+
+Las pruebas unitarias ayudan a prevenir errores en el código individual.
+Las pruebas de componentes ayudan a prevenir problemas con la interacción entre componentes.
+Las pruebas de extremo a extremo ayudan a prevenir problemas con el flujo general de la aplicación.
+
+## Unit Testing en Vue (Pruebas Unitarias)
+Las pruebas unitarias se escriben para verificar que pequeñas unidades aisladas de código funcionen como se espera. Una prueba unitaria generalmente cubre una única función, clase, componente reutilizable o módulo. Las pruebas unitarias se centran en la corrección lógica y solo se preocupan por una pequeña parte de la funcionalidad general de la aplicación. Pueden simular grandes partes del entorno de tu aplicación (por ejemplo, estado inicial, clases complejas, módulos de terceros y solicitudes de red).
+
+En general, las pruebas unitarias detectarán problemas con la corrección lógica de una función. Un ejemplo puede ser esta funcion de incremet:
+```js
+// helpers.js
+export function increment (current, max = 10) {
+  if (current < max) {
+    return current + 1
+  }
+  return current
+}
+```
+Como esta función es independiente, es fácil llamarla y chequear que devuelve lo que se supone que debe hacer, por lo que escribiremos una prueba unitaria. Si alguna de estas afirmaciones falla, está claro que el problema está dentro de la función increment.
+
+```js
+// helpers.spec.js
+import { increment } from './helpers'
+
+describe('increment', () => {
+  test('increments the current number by 1', () => {
+    expect(increment(0, 10)).toBe(1)
+  })
+
+  test('does not increment the current number over the max', () => {
+    expect(increment(10, 10)).toBe(10)
+  })
+
+  test('has a default max of 10', () => {
+    expect(increment(10)).toBe(10)
+  })
+})
+```
+
+## Component Testing en Vue (Pruebas de componentes)
+
+En aplicaciones Vue, los componentes son los elementos principales de la interfaz de usuario. Por lo tanto, son la unidad natural de aislamiento para validar el comportamiento de tu aplicación. Desde una perspectiva de granularidad, las pruebas de componentes se ubican por encima de las pruebas unitarias y se pueden considerar como una forma de pruebas de integración.
+
+Gran parte de tu aplicación Vue debería estar cubierta por pruebas de componentes, y se recomienda que cada componente Vue tenga su propio archivo de especificaciones.
+
+
+Las pruebas de componentes deben detectar problemas relacionados con:
+
+- Props: Las propiedades que reciben del componente padre.
+- Eventos: Las acciones que ejsmite el componente para informar al componente padre.
+- Ranuras: Las secciones de la plantilla del componente que pueden ser personalizadas por el componente padre.
+- Estilos: La apariencia visual del componente.
+- Clases: Las clases CSS que se aplican al componente.
+- Ciclos de vida: Los diferentes estados por los que pasa el componente durante su creación, montaje y destrucción.
+
+
+Las pruebas de componentes no deben simular los componentes secundarios, sino probar las interacciones entre tu componente y sus hijos interactuando con los componentes como lo haría un usuario.
+
+**Las pruebas de componentes se centran en el qué, no en el cómo.**
+
+Las pruebas de componentes en Vue no deberían ahondar en los detalles internos de cómo funciona un componente, sino en su comportamiento observable desde el exterior.
+
+En el siguiente ejemplo, demostramos un componente Stepper que tiene un elemento DOM con la etiqueta "incrementar" que se puede hacer clic. Le pasamos un prop llamado "max" que evita que el Stepper se incremente más allá de 2, así que si hacemos clic en el botón 3 veces, la interfaz de usuario aún debería mostrar 2.
+
+**Vue test util*
+```js 
+const valueSelector = '[data-testid=stepper-value]'
+const buttonSelector = '[data-testid=increment]'
+
+const wrapper = mount(Stepper, {
+  props: {
+    max: 1
+  }
+})
+
+expect(wrapper.find(valueSelector).text()).toContain('0')
+
+await wrapper.find(buttonSelector).trigger('click')
+
+expect(wrapper.find(valueSelector).text()).toContain('1')
+```
+**Testing Library*
+```js
+const { getByText } = render(Stepper, {
+  props: {
+    max: 1
+  }
+})
+
+getByText('0') // Implicit assertion that "0" is within the component
+
+const button = getByRole('button', { name: /increment/i })
+
+// Dispatch a click event to our increment button.
+await fireEvent.click(button)
+
+getByText('1')
+
+await fireEvent.click(button)
+```
+## E2E Testing en Vue (Pruebas de extremo a extremos)
+
+Si bien las pruebas unitarias y de componentes brindan cierta confianza a los desarrolladores, tienen limitaciones para cubrir la totalidad de una aplicación cuando se implementa en producción. En este punto, las pruebas de extremo a extremo (E2E) ofrecen una visión integral de lo que realmente sucede cuando los usuarios interactúan con tu aplicación.
+
+Las pruebas E2E se centran en el comportamiento de una aplicación multipágina que realiza solicitudes de red a la versión construida para producción de tu aplicación Vue. Esto suele implicar configurar una base de datos u otro backend, e incluso puede ejecutarse en un entorno de staging real.
+
+Estas pruebas suelen detectar problemas en el router, la biblioteca de administración de estado, los componentes de nivel superior (como una aplicación o un diseño), los recursos públicos o cualquier manejo de solicitudes. En resumen, identifican problemas críticos que podrían pasar desapercibidos con pruebas unitarias o de componentes.
+
+**Recomendaciones**
+
+- CYPRESS (Se considera la mejor opcion)
+
+En general, creemos que Cypress ofrece la solución de pruebas de extremo a extremo más completa gracias a sus características como una interfaz gráfica informativa, excelente capacidad de depuración, aserciones y stubs integrados, resistencia a la fragilidad, paralelización y snapshots. Como se mencionó anteriormente, también admite pruebas de componentes. Sin embargo, solo es compatible con navegadores basados en Chromium y Firefox.
+
+**Otras Opciones**
+- **Playwright** también es una excelente solución de pruebas de extremo a extremo con una gama más amplia de compatibilidad con navegadores (principalmente WebKit). Consulta Por qué Playwright para obtener más detalles.
+
+- **Nightwatch** es una solución de pruebas de extremo a extremo basada en Selenium WebDriver. Esto le otorga la mayor compatibilidad con navegadores.
+
+- **WebdriverIO** es un marco de automatización de pruebas para pruebas web y móviles basado en el protocolo WebDriver.
