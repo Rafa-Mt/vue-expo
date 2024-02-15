@@ -1,6 +1,7 @@
 import ExampleWrapper from "../../ExampleWrapper.vue";
 import PageView from "../../../views/PageView.vue";
 import Awrap from "./Awrap.vue";
+import OnRenderT from "./OnRenderT.vue";
 
 <PageView>
 
@@ -237,29 +238,32 @@ El hook ~~onRenderTracked~~ se utiliza para realizar un seguimiento de las depen
 
 ```js
 <script setup>
+  import { ref, onRenderTracked } from 'vue';
 
-import { ref, onRenderTracked } from 'vue';
+  const count = ref(0);
 
-const count = ref(0);
-
-onRenderTracked(event => {
-  console.log('Dependencia de renderizado rastreada:', event);
-});
-return { count };
-
+  onRenderTracked(event => {
+    console.log('Dependencia de renderizado rastreada:', event);
+  });
 </script>
   
 <template>
-
   <button v-on:click="count++">Haz clic en mí</button>
-
- <p>Has hecho clic {{ count }} veces</p>
-
+  <p>Has hecho clic {{ count }} veces</p>
 </template>
 
 ```
+nos daria un resultado como este:
 
+
+
+```html
+Dependencia de renderizado rastreada: {effect: ReactiveEffect, target: RefImpl, type: 'get', key: 'value'}
+```
   
+<ExampleWrapper>
+  <OnRenderT/>
+</ExampleWrapper>
 
 Este hook es útil para depurar y comprender qué dependencias reactivas están siendo utilizadas durante la renderización de un componente. Puedes utilizarlo para realizar tareas de registro o para detectar posibles problemas de rendimiento relacionados con el seguimiento de dependencias.
 
@@ -274,23 +278,23 @@ El hook ~~onRenderTriggered~~ se utiliza para realizar un seguimiento de las dep
 
 ```js
 <script setup>
-import { ref, onRenderTriggered } from 'vue';
+  import { ref, onRenderTriggered } from 'vue';
 
-const count = ref(0);
+  const count = ref(0);
 
-onRenderTriggered(event => {
-  console.log('Renderizado desencadenado por:', event);
-});
-
-return { count };
+  onRenderTriggered(event => {
+    console.log('Dependencia de renderizado disparada:', event);
+  });
 </script>
-
+  
 <template>
   <button v-on:click="count++">Haz clic en mí</button>
   <p>Has hecho clic {{ count }} veces</p>
 </template>
-  
+```
 
+```html	  
+Dependencia de renderizado disparada: {type: "set", target: Proxy, key: "value", oldValue: 0, newValue: 1}
 ```
 
   
@@ -411,69 +415,47 @@ Este hook es útil para realizar operaciones de precarga de datos o de configura
 ## Ejemplo
 
 ```js
-template>
-
- <div>
-
-  <p>El botón ha sido presionado {{ count }} veces.</p>  
-
-  <button id="count" v-on:click="count++">{{ count }}</button>
-
- </div>
-
+<template>
+  <div> 
+    <p ref="paragraphRef">El botón ha sido presionado {{ count }} veces.</p>   
+    <button id="count" v-on:click="count++">{{ count }}</button>
+  </div>
 </template>
-
+  
 <script setup>
-
- import { ref, onMounted, onBeforeUpdate, onUpdated, onBeforeUnmount, onUnmounted, onBeforeMount } from 'vue';
-
- // Variables reactivas
-
- const count = ref(0);
-
- // Hooks
-
+  import { ref, onMounted, onBeforeUpdate, onUpdated, onBeforeUnmount, onUnmounted, onBeforeMount } from 'vue';
   
+  // Variables reactivas
+  const count = ref(0);
+  const paragraphRef = ref(null);
+  // Hooks
 
- onBeforeMount(() => {
+  onBeforeMount(() => {
+    console.log('Antes de montar el componente(onBeforeMount)', count.value);
+    
+  });
 
-  console.log('Antes de montar el componente(onBeforeMount)');
-
-});
-
+  onMounted(() => {
+    console.log('El componente ha sido montado (onMounted)', count.value);
+  });
   
-
- onMounted(() => {
-
-  console.log('El componente ha sido montado (onMounted)');
-
- });
-
- onBeforeUpdate(() => {
-
-  console.log('Antes de actualizar el componente(onBeforeUpdate)');
-
- });
-
- onUpdated(() => {
-
-  console.log('El componente ha sido actualizado(onUpdated)');
-
- });
-
- onBeforeUnmount(() => {
-
-  console.log('Antes de desmontar el componente(onBeforeUnmount)');
-
- });
-
- onUnmounted(() => {
-
-  console.log('El componente ha sido desmontado(onUnmounted)');
-
- });
-
+  onBeforeUpdate(() => {
+    console.log('Antes de actualizar el componente(onBeforeUpdate)', count.value);
+    console.log('InnerText ', paragraphRef.value.innerText);
+  });
   
+  onUpdated(() => {
+    console.log('El componente ha sido actualizado(onUpdated)', count.value);
+    console.log('InnerText:', paragraphRef.value.innerText);
+  });
+  
+  onBeforeUnmount(() => {
+    console.log('Antes de desmontar el componente(onBeforeUnmount)', count.value);
+  });
+  
+  onUnmounted(() => {
+    console.log('El componente ha sido desmontado(onUnmounted)',  count.value);
+  });
 
 </script>
 ```
