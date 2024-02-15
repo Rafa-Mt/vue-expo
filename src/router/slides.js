@@ -2,7 +2,7 @@ import Intro from "../components/slides/Intro/Intro.mdx";
 import Instalacion from "../components/slides/Instalacion/Instalacion.mdx";
 import CrearProyecto from "../components/slides/CrearProyecto/CrearProyecto.mdx";
 import APIs from "../components/slides/APIs/APIs.mdx";
-import TemplateSyntax from "../components/slides/TemplateSyntax/TemplateSyntax.mdx";
+import TemplateSyntax from "../components/slides/TemplateSyntax/TemplateSyntax.mdx"
 import Reactividad from "../components/slides/Reactividad/Reactividad.mdx";
 import PropiedadesComputadas from "../components/slides/PropiedadesComputadas/PropiedadesComputadas.mdx";
 import Watchers from "../components/slides/Watchers/Watchers.mdx";
@@ -67,15 +67,5 @@ export default [
     name: "Directivas",
     path: "/directivas",
     component: Directivas,
-  },
-  {
-    name: "Lifecycle Hooks",
-    path: "/lifecycles",
-    component: Lifecycles,
-  },
-  {
-    name: "Routing",
-    path: "/routing",
-    component: Routing,
   },
 ];
