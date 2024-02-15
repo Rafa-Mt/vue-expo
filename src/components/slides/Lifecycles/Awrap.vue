@@ -1,41 +1,46 @@
 <template>
   <div> 
-    <p>El botón ha sido presionado {{ count }} veces.</p>   
+    <p ref="paragraphRef">El botón ha sido presionado {{ count }} veces.</p>   
     <button id="count" @click="count++">{{ count }}</button>
   </div>
 </template>
   
 <script setup>
-  import { ref, onMounted, onBeforeUpdate, onUpdated, onBeforeUnmount, onUnmounted, onBeforeMount } from 'vue';
+  import { ref, onMounted, onBeforeUpdate, onUpdated, onBeforeUnmount, onUnmounted, onBeforeMount,onErrorCaptured } from 'vue';
   
   // Variables reactivas
   const count = ref(0);
-  
+  const paragraphRef = ref(null);
   // Hooks
 
   onBeforeMount(() => {
-    console.log('Antes de montar el componente(onBeforeMount)');
+    console.log('Antes de montar el componente(onBeforeMount)', count.value);
   });
 
   onMounted(() => {
-    console.log('El componente ha sido montado (onMounted)');
+    console.log('El componente ha sido montado (onMounted)', count.value);
   });
   
   onBeforeUpdate(() => {
-    console.log('Antes de actualizar el componente(onBeforeUpdate)');
+    console.log('Antes de actualizar el componente(onBeforeUpdate)', count.value);
+    console.log('InnerText ', paragraphRef.value.innerText);
   });
   
   onUpdated(() => {
-    console.log('El componente ha sido actualizado(onUpdated)');
+    console.log('El componente ha sido actualizado(onUpdated)', count.value);
+    console.log('InnerText :', paragraphRef.value.innerText);
   });
   
   onBeforeUnmount(() => {
-    console.log('Antes de desmontar el componente(onBeforeUnmount)');
+    console.log('Antes de desmontar el componente(onBeforeUnmount)', count.value);
   });
   
   onUnmounted(() => {
-    console.log('El componente ha sido desmontado(onUnmounted)');
+    console.log('El componente ha sido desmontado(onUnmounted)',  count.value);
   });
+
+
+
 
 </script>
   

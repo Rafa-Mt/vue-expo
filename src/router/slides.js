@@ -9,6 +9,7 @@ import Watchers from "../components/slides/Watchers/Watchers.mdx";
 import Directivas from "../components/slides/Directivas/Directivas.mdx";
 import Lifecycles from "../components/slides/Lifecycles/Lifecycles.mdx";
 import Routing from "../components/slides/Routing/Routing.mdx";
+import ReusableComponents from "../components/slides/Reusabilidad/Reusabilidad.mdx";
 
 Intro.displayName = "Introducción";
 Instalacion.displayName = "Instalación";
@@ -68,4 +69,15 @@ export default [
     path: "/directivas",
     component: Directivas,
   },
+  {
+    name: "Lifecycle Hooks",
+    path: "/lifecycle-hooks",
+    component: Lifecycles,
+  },
+  {
+    name: "Reusable Components",
+    path: "/reusable-components",
+    component: ReusableComponents,
+  },
+
 ];
