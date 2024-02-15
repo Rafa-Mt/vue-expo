@@ -2,7 +2,6 @@
 import logo from "@/assets/logo.svg"
 import uruLogo from '@/assets/uru-logo.png'
 import GridSquare from '@/components/GridSquare.vue'
-// import Reactividad from '../components/slides/Reactividad/Slide.mdx'
 
 
 
@@ -22,7 +21,7 @@ import GridSquare from '@/components/GridSquare.vue'
       <h1>VueJS en 4 horas</h1>
       <p>Por Tomas Santana, Marlon Urdaneta, Rafael Mata, Andres Garcia, Juan Gil, y Jose Carrillo</p>
     </div>
-    <div class="rapid-guides">
+    <!-- <div class="rapid-guides">
       <h2>Guias Rapidas</h2>
       <div class="squares">
         <GridSquare path="/installation" name="Slides" color="#42b883" class="grid-1" />
@@ -33,8 +32,7 @@ import GridSquare from '@/components/GridSquare.vue'
         <GridSquare path="/installation" name="Vue 3" color="#126352" class="grid-6" />
 
       </div>
-    </div>
-    <Reactividad />
+    </div> -->
   </main>
 </template>
 
@@ -45,7 +43,8 @@ import GridSquare from '@/components/GridSquare.vue'
     justify-content: center;
     align-items: center;
     gap: 30px;
-    height: 100%;
+    height: 100vh;
+    height: 100dvh;
     width: 100%;
     overflow: hidden;
     

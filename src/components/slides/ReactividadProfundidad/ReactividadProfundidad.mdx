@@ -1,0 +1,87 @@
+import ExampleWrapper from '../../ExampleWrapper.vue'
+import PageView from '../../../views/PageView.vue'
+import Sum from './Sum.vue'
+import { ref } from 'vue'
+
+<PageView>
+
+# Reactividad a profundidad
+
+Como se mencionó antes, la reactividad es la habilidad de nuestra aplicacion de reflejar cambios en su **estado** en el DOM. Pero un punto importante es que debe poder hacerlo de forma **declarativa**.
+
+Veamos un ejemplo:
+
+<ExampleWrapper>
+    <Sum />
+</ExampleWrapper>
+
+Cuando cambiamos el valor de ~A~ o ~B~, el resultado cambia automáticamente. Pero Javascript no funciona así por defecto:
+
+```javascript
+let A = 1
+let B = 2
+let C = A + B
+
+console.log(C) // 3
+
+A = 2
+console.log(C) // Todavía 3
+```
+
+Cuando cambiamos el valor de ~A~, ~C~ no cambia de forma automática. 
+
+Definamos algunos conceptos, pero primero escribamos una función que nos deje modificar el valor
+
+```javascript
+let C
+
+function update() {
+    C = A + B
+}
+```
+
+- ~update()~ es una función que produce efectos secundarios, o un **effect**
+- ~A~ y ~B~ son **dependencias** del efecto. Se dice que el efecto es **suscriptor** de ~A~ y ~B~
+
+Se necesita una función mágica ~cuandoCambianDependencias(update)~ que se encargue de llamar a ~update~ cuando ~A~ o ~B~ cambien.
+
+## Reactividad en Vue
+
+En JavaScript, es imposible conocer el cuando una variable primitiva cambia de valor. Es por eso que Vue utiliza ~ref~ y ~reactive~ para poder hacerlo.
+- ~ref~ utiliza **getters** y **setters**.
+- ~reactive~ utiliza **Proxies**.
+
+Veamos como funcionan estas dos funciones de forma simplificada:
+
+```javascript
+function reactive(obj) {
+  return new Proxy(obj, {
+    get(target, key) {
+      return target[key]
+    },
+    set(target, key, value) {
+      target[key] = value
+      trigger(target, key)
+    }
+  })
+}
+
+function ref(value) {
+  const refObject = {
+    get value() {
+      track(refObject, 'value')
+      return value
+    },
+    set value(newValue) {
+      value = newValue
+      trigger(refObject, 'value')
+    }
+  }
+  return refObject
+}
+```
+
+De forma simplificada, ~track~ verifica si hay 
+
+
+</PageView>
