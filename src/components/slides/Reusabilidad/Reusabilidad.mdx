@@ -1,0 +1,465 @@
+import ExampleWrapper from "../../ExampleWrapper.vue";
+import PageView from "../../../views/PageView.vue";
+import Mouse from "./Mouse.vue";
+import Form from "./form.vue";
+
+<PageView>
+
+# Reusabilidad
+
+## Composables
+
+En Vue.js, los composables son una forma de abstraer y reutilizar la lógica entre componentes. 
+
+
+```html
+<script setup>
+import { ref, onMounted, onUnmounted } from 'vue'
+
+const x = ref(0)
+const y = ref(0)
+
+function update(event) {
+  x.value = event.pageX
+  y.value = event.pageY
+}
+
+onMounted(() => window.addEventListener('mousemove', update))
+onUnmounted(() => window.removeEventListener('mousemove', update))
+</script>
+
+<template>Mouse position is at: {{ x }}, {{ y }}</template>
+```
+
+usando composables:
+
+```js
+// Mouse.js
+import { ref, onMounted, onUnmounted } from 'vue'
+
+export function useMouse() {
+  const x = ref(0)
+  const y = ref(0)
+
+  function update(event) {
+    x.value = event.pageX
+    y.value = event.pageY
+  }
+
+  onMounted(() => window.addEventListener('mousemove', update))
+  onUnmounted(() => window.removeEventListener('mousemove', update))
+
+  return { x, y }
+}
+```
+
+```html
+<script setup>
+import { useMouse } from './mouse.js'
+
+const { x, y } = useMouse()
+</script>
+
+<template>Mouse position is at: {{ x }}, {{ y }}</template>
+```
+
+<ExampleWrapper >
+  <Mouse/>
+</ExampleWrapper>
+
+### Convenciones y prácticas óptimas
+
+#### **Nombrando**
+Es una convención nombrar funciones composables con nombres en camelCase que comienzan con "use".
+
+#### **Argumentos de entrada**
+Las composables pueden aceptar argumentos de ref o getter incluso si no confía en ellos para la reactividad. Si estás escribiendo un composable que puede ser utilizado por otros desarrolladores, es una buena idea manejar el caso de los argumentos de entrada que se están haciendo refs o getters en lugar de valores crudos. El toValue() es una función de utilidad  para este propósito:
+
+#### **Valores de retorno**
+
+La convención recomendada es para que los composables devuelvan siempre un objeto no reactivo sencillo,  que contiene múltiples refs. Esto permite desestructurarse en componentes conservando la reactividad
+
+Devolver un objeto reactivo de un compostable hará que tales desestructuraciones pierdan la conexión de reactividad con el estado dentro del composable, mientras que los árbitros conservarán esa conexión.
+
+## Directivas Custom
+
+Los componentes son los bloques de construcción principales, mientras que los elementos composables se centran en reutilizar la lógica sin estado. Las directivas personalizadas, por otro lado, están destinadas principalmente a reutilizar la lógica que implica acceso DOM de bajo nivel en elementos simples.
+
+```js
+<script setup>
+// enables v-focus in templates
+const vFocus = {
+  mounted: (el) => el.focus()
+}
+</script>
+
+<template>
+  <input v-focus />
+</template>
+```
+
+
+### Directive Hooks
+
+```js
+const miDirectiva = {
+  // llamado solo una vez, cuando la directiva es vinculada por primera vez
+  created(el, binding, vnode, prevVnode) {
+  },
+
+  // llamado justo antes de que el elemento sea insertado en el DOM.
+  beforeMount(el, binding, vnode) {},
+
+  // llamado cuando el componente padre del elemento vinculado
+  // y todos sus hijos se han montado.
+  mounted(el, binding, vnode) {},
+
+  // llamado antes de que el componente padre sea actualizado
+  beforeUpdate(el, binding, vnode, prevVnode) {},
+
+  // llamado después de que el componente padre y
+  // todos sus hijos se han actualizado
+  updated(el, binding, vnode, prevVnode) {},
+
+  // llamado antes de que el componente padre sea desmontado
+  beforeUnmount(el, binding, vnode) {},
+  
+  // llamado cuando el componente padre es desmontado
+  unmounted(el, binding, vnode) {}
+}
+
+```
+
+### Argumentos de los Hooks de Directiva
+
+Los ganchos de directiva reciben los siguientes argumentos:
+
+  el: El elemento al que se adjunta la directiva.
+
+```js	
+app.directive('color', (el, binding) => {
+ 
+  el.style.color = binding.value
+})
+```
+
+  binding: Un objeto que contiene la información de la directiva.
+    - value: El valor de la directiva.
+    - oldValue: El valor anterior, solo disponible en los ganchos updated y beforeUpdate.
+    - arg: El argumento de la directiva, si se proporciona.
+    - modifiers: Un objeto que contiene modificadores de la directiva.
+    - instance: La instancia del componente que contiene la directiva.
+    - component: El componente que contiene la directiva.
+    - dir: El objeto de la directiva
+```js
+binding:{
+  value: 'valor de la directiva',
+  oldValue: 'valor anterior de la directiva',
+  arg: 'argumento de la directiva',
+  modifiers: { modificador1: true, modificador2: false },
+  instance: {}, // la instancia del componente que contiene la directiva
+  component: {}, // el componente que contiene la directiva
+  dir: {} // el objeto de la directiva
+}
+```
+
+  vnode: Nodo virtual del elemento.
+
+  ```js
+  vnode: {
+  tag: 'div',
+  data: {
+    attrs: {
+      id: 'my-div'
+    },
+    on: {
+      click: function() { /* función de manejo de clics */ }
+    }
+  },
+  children: [
+    /* otros objetos vnode que representan los hijos de este nodo */
+  ]
+}
+```
+
+  prevVnode: Nodo virtual del elemento anterior.
+
+### literales de objeto
+
+ son una forma de pasar un objeto como argumento de directiva. 
+
+  ```html
+  <div v-my-directive="{ foo: 123, bar: 'baz' }"></div>
+  ```
+
+  ```js
+  const miDirectiva = {
+  mounted(el, binding) {
+    console.log(binding.value.foo) // 123
+    console.log(binding.value.bar) // 'baz'
+  }
+}
+  ```
+
+### Modificadores de Directiva
+
+Los modificadores son sufijos especiales que se pueden agregar a las directivas para cambiar su comportamiento.
+  
+  ```html
+  <div v-my-directive.foo.bar="value"></div>
+  ```
+
+  ```js
+  const miDirectiva = {
+  mounted(el, binding) {
+    if (binding.modifiers.foo) {
+      // ...
+    }
+
+    if (binding.modifiers.bar) {
+      // ...
+    }
+  }
+}
+  ```
+
+### Directivas Globales
+  
+  ```js
+  // main.js
+  app.directive('mi-directiva', {
+  mounted(el, binding) {
+    // ...
+  }
+})
+  ```
+
+
+
+# pluggins
+ 
+ Son fragmentos de código que añaden funcionalidades globales a una aplicación Vue.  Pueden registrar componentes globales, añadir métodos o propiedades a la instancia de Vue,  o añadir funcionalidades a las opciones de los componentes
+
+ Se define como un objeto que expone un método install(),  que actúa como la propia función de instalación. La función de instalación recibe la instancia de la aplicación junto con opciones adicionales pasadas a app.use()
+
+Así es como instalamos un plugin
+
+```js
+//main.js
+import { createApp } from 'vue'
+import FormValidationPlugin from './form-validation-plugin'
+
+const app = createApp({})
+
+app.use(FormValidationPlugin, {
+  rules: {
+    email: {
+      required: true,
+      pattern: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/
+    },
+    password: {
+      required: true,
+      minLength: 8
+    }
+  },
+  messages: {
+    email: {
+      required: 'Email is required',
+      pattern: 'Please enter a valid email address'
+    },
+    password: {
+      required: 'Password is required',
+      minLength: 'Password must be at least 8 characters long'
+    }
+  }
+})
+```
+
+```js
+//form-validation-plugin.js
+const FormValidationPlugin = {
+  install(app, options) {
+    // Aquí, 'options' es el objeto que se pasa a 'app.use()' en main.js
+    app.config.globalProperties.$validate = function (field, value) {
+      const rules = options.rules[field];
+      const messages = options.messages[field];
+
+      if (rules.required && !value) {
+        return messages.required;
+      }
+
+      if (rules.pattern && !rules.pattern.test(value)) {
+        return messages.pattern;
+      }
+
+      if (rules.minLength && value.length < rules.minLength) {
+        return messages.minLength;
+      }
+
+      // Si pasa todas las validaciones, devuelve null
+      return null;
+    };
+    //    app.provide('validate', validate);
+  }
+}
+```
+
+En este código, FormValidationPlugin es un objeto que tiene un método install. Este método se llama cuando el plugin se instala con app.use(). Dentro de la función install, puedes añadir funcionalidades a la aplicación Vue.
+
+En este ejemplo, la función $validate toma un nombre de campo y un valor, y comprueba el valor contra las reglas de validación proporcionadas en las opciones. Si el valor no pasa alguna de las validaciones, la función devuelve el mensaje de error correspondiente. Si el valor pasa todas las validaciones, la función devuelve null.
+
+```html
+<!-- Form.vue -->
+<template>
+  <form v-on:submit.prevent="submitForm">
+    <label for="email">Email</label>
+    <input v-model="email" v-on:blur="validateField('email', email)" />
+    <p v-if="errors.email">{{ errors.email }}</p>
+
+    <label for="password">password</label>
+    <input type="password" v-model="password" v-on: blur="validateField('password', password)" />
+    <p v-if="errors.password">{{ errors.password }}</p>
+
+    <button type="submit">Submit</button>
+  </form>
+</template>
+
+<script setup>
+import { ref, getCurrentInstance } from 'vue';
+
+const email = ref('');
+const password = ref('');
+const errors = ref({
+  email: null,
+  password: null
+});
+
+const instance = getCurrentInstance(); //const validate = inject('validate');
+
+const validateField = (field, value) => {
+  errors.value[field] = instance.appContext.config.globalProperties.$validate(field, value); //validate(field, value);
+};
+
+const submitForm = () => {
+  validateField('email', email.value);
+  validateField('password', password.value);
+
+  if (!errors.value.email && !errors.value.password) {
+    // Si no hay errores, envía el formulario
+  }
+};
+</script>
+```
+<ExampleWrapper>
+    <Form/>
+</ExampleWrapper>
+
+En este ejemplo, cada vez que el usuario deja un campo de entrada (blur), se llama a la función validateField, que a su vez llama a la función $validate proporcionada por el plugin FormValidationPlugin. Si $validate devuelve un mensaje de error, se muestra debajo del campo de entrada correspondiente. Cuando el usuario envía el formulario, se validan todos los campos y, si no hay errores, se envía el formulario.
+
+
+## Provide / Inject con Plugins
+
+ son una forma de compartir datos entre componentes sin tener que pasar props manualmente a través de múltiples niveles de componentes.
+
+```js
+//main.js
+import { createApp } from 'vue'
+import FormValidationPlugin from './form-validation-plugin'
+
+const app = createApp({})
+
+app.use(FormValidationPlugin, {
+  rules: {
+    email: {
+      required: true,
+      pattern: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/
+    },
+    password: {
+      required: true,
+      minLength: 8
+    }
+  },
+  messages: {
+    email: {
+      required: 'Email is required',
+      pattern: 'Please enter a valid email address'
+    },
+    password: {
+      required: 'Password is required',
+      minLength: 'Password must be at least 8 characters long'
+    }
+  }
+})
+```
+
+```js
+//form-validation-plugin.js
+const FormValidationPlugin = {
+  install(app, options) {
+    const validate = function (field, value) {
+      const rules = options.rules[field];
+      const messages = options.messages[field];
+
+      if (rules.required && !value) {
+        return messages.required;
+      }
+
+      if (rules.pattern && !rules.pattern.test(value)) {
+        return messages.pattern;
+      }
+
+      if (rules.minLength && value.length < rules.minLength) {
+        return messages.minLength;
+      }
+
+      // Si pasa todas las validaciones, devuelve null
+      return null;
+    };
+    app.provide('validate', validate);
+  }
+}
+```
+
+```html
+<!-- Form.vue -->
+<template>
+  <form v-on:submit.prevent="submitForm">
+    <label for="email">Email</label>
+    <input v-model="email" v-on:blur="validateField('email', email)" />
+    <p v-if="errors.email">{{ errors.email }}</p>
+
+    <label for="password">password</label>
+    <input type="password" v-model="password" v-on: blur="validateField('password', password)" />
+    <p v-if="errors.password">{{ errors.password }}</p>
+
+    <button type="submit">Submit</button>
+  </form>
+</template>
+
+<script setup>
+import { ref, inject } from 'vue';
+
+const email = ref('');
+const password = ref('');
+const errors = ref({
+  email: null,
+  password: null
+});
+
+const validate = inject('validate');
+
+const validateField = (field, value) => {
+  errors.value[field] = validate(field, value);
+};
+
+const submitForm = () => {
+  validateField('email', email.value);
+  validateField('password', password.value);
+
+  if (!errors.value.email && !errors.value.password) {
+    // Si no hay errores, envía el formulario
+  }
+};
+</script>
+```
+</PageView>
