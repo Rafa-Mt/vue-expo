@@ -8,6 +8,7 @@ import PropiedadesComputadas from "../components/slides/PropiedadesComputadas/Pr
 import Watchers from "../components/slides/Watchers/Watchers.mdx";
 import Directivas from "../components/slides/Directivas/Directivas.mdx";
 import Lifecycles from "../components/slides/Lifecycles/Lifecycles.mdx";
+import Routing from "../components/slides/Routing/Routing.mdx";
 
 Intro.displayName = "Introducción";
 Instalacion.displayName = "Instalación";
@@ -19,7 +20,7 @@ PropiedadesComputadas.displayName = "Propiedades Computadas";
 Watchers.displayName = "Watchers";
 Directivas.displayName = "Directivas";
 Lifecycles.displayName = "Lifecycle Hooks";
-
+Routing.displayName = "Routing";
 
 export default [
   {
@@ -71,6 +72,10 @@ export default [
     name: "Lifecycle Hooks",
     path: "/lifecycles",
     component: Lifecycles,
-  }
-
+  },
+  {
+    name: "Routing",
+    path: "/routing",
+    component: Routing,
+  },
 ];
