@@ -1,10 +1,6 @@
-<!--
-FLIP list transitions with the built-in <TransitionGroup>.
-https://aerotwist.com/blog/flip-your-animations/
--->
+
 
 <script setup>
-import { shuffle as _shuffle } from 'lodash-es'
 import { ref } from 'vue'
 
 const getInitialItems = () => [1, 2, 3, 4, 5]
@@ -22,7 +18,21 @@ function reset() {
 }
 
 function shuffle() {
-  items.value = _shuffle(items.value)
+  let currentIndex = items.value.length,  randomIndex;
+
+  // While there remain elements to shuffle.
+  while (currentIndex > 0) {
+
+    // Pick a remaining element.
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    // And swap it with the current element.
+    [items.value[currentIndex], items.value[randomIndex]] = [
+      items.value[randomIndex], items.value[currentIndex]];
+  }
+
+  return items.value;
 }
 
 function remove(item) {
@@ -34,9 +44,11 @@ function remove(item) {
 </script>
 
 <template>
-  <button @click="insert">insert at random index</button>
-  <button @click="reset">reset</button>
-  <button @click="shuffle">shuffle</button>
+  <div class="button-group">
+    <button @click="insert">insert at random index</button>
+    <button @click="reset">reset</button>
+    <button @click="shuffle">shuffle</button>
+  </div>
 
   <TransitionGroup tag="ul" name="fade" class="container">
     <div v-for="item in items" class="item" :key="item">
@@ -50,6 +62,10 @@ function remove(item) {
 .container {
   position: relative;
   padding: 0;
+  margin-top: 30px;
+}
+.button-group {
+  margin-bottom: 10px;
 }
 
 .item {
@@ -78,5 +94,6 @@ function remove(item) {
       animations can be calculated correctly. */
 .fade-leave-active {
   position: absolute;
+  
 }
 </style>

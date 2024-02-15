@@ -12,6 +12,11 @@ const show = ref(true)
 </template>
 
 <style>
+p {
+  margin-top: 20px;
+
+}
+
 .slide-fade-enter-active {
   transition: all 0.3s ease-out;
 }

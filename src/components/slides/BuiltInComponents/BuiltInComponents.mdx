@@ -6,6 +6,7 @@ import App from './App.vue'
 import TransitionList from './TransitionList.vue'
 import ExampleWrapper from '../../ExampleWrapper.vue'
 import PageView from '../../../views/PageView.vue'
+import OpacityImg from './Opacity.png'
 
 <PageView>
 
@@ -19,7 +20,7 @@ El primero de estos es ~Transition~, que aplica animaciones cuando un elemento o
 
 Viendo un ejemplo muy sencillo:
 
-```vue
+```html
 <script setup>
 import { ref } from 'vue'
 
@@ -54,7 +55,10 @@ const show = ref(true)
 
 Existen 6 clases que se aplican a los elementos que entran o salen del DOM:
 
-![Transition Classes in Vue](/Opacity.png "Opacity in CSS")
+<ExampleWrapper style="display:grid;place-items:center">
+  <img src={OpacityImg} alt="Transiciones" width={500}/>
+</ExampleWrapper>
+
 
 1. ~v-enter-from~: Aplicada justo antes que el elemento se inserte, y removida un frame luego de insertarse.
 
@@ -70,7 +74,7 @@ Existen 6 clases que se aplican a los elementos que entran o salen del DOM:
 
 Además, ~v-enter-active~ y ~v-leave-active~ permiten especificar diferentes curvas de animación en las transiciones, como se verá más adelante. Primero, hay que saber también que se le pueden aplicar nombres a las transiciones con la propiedad ~name~:
 
-```vue
+```html
 <Transition name="slide">
   ...
 </Transition>
@@ -78,7 +82,7 @@ Además, ~v-enter-active~ y ~v-leave-active~ permiten especificar diferentes cur
 
 Con esto, las clases ahora tienen el prefijo ~slide~ en vez de ~v~; y usando esto, se puede dar un ejemplo más avanzado:
 
-```vue
+```html
 <template>
 	<button @click="show = !show">Click to Slide</button>
   <Transition name="slide">
@@ -111,7 +115,7 @@ Con esto, las clases ahora tienen el prefijo ~slide~ en vez de ~v~; y usando est
 
 Las animaciones nativas de CSS se aplican de la misma forma que las transiciones, y normalmente se aplican solo con ~v-enter-active~ y ~v-leave-active~:
 
-```vue
+```html
 <template>
 	<button @click="show = !show">Click to Bounce!</button>
   <Transition name="bounce">
@@ -148,13 +152,13 @@ Las animaciones nativas de CSS se aplican de la misma forma que las transiciones
 
 También pueden tenerse animaciones y transiciones trabajando en conjunto, y se pueden aplicar a cualquier elemento o componente que se esté insertando o eliminando del DOM. Solo se tiene que especificar una o la otra para Vue, con la propiedad ~type~:
 
-```vue
+```html
 <Transition type="animation">...</Transition>
 ```
 
 Además, se pueden crear transiciones reutilizables con el sistema de Componentes de Vue. Esto hará de Wrapper para la transición y pase lo que necesite el slot:
 
-```vue
+```html
 <template>
   <Transition
     name="my-transition"
@@ -171,7 +175,7 @@ Además, se pueden crear transiciones reutilizables con el sistema de Componente
 
 Y luego el componente se puede usar como cualquier otro:
 
-```vue
+```html
 <my-transition>
   <div v-if="show">Hello World!</div>
 </my-transition>
@@ -179,7 +183,7 @@ Y luego el componente se puede usar como cualquier otro:
 
 Existen también multiples modos de transición en Vue, que se pueden especificar con la propiedad ~mode~:
 
-```vue
+```html
 <Transition mode="out-in">
   ...
 </Transition>
@@ -191,7 +195,7 @@ Existen también multiples modos de transición en Vue, que se pueden especifica
 
 Por último, se pueden aplicar transiciones entre componentes dinámicos, como en el siguiente ejemplo:
 
-```vue
+```html
 <template>
 	<label>
     <input type="radio" v-model="activeComponent" :value="CompA"> A
@@ -212,7 +216,7 @@ Pasando a otro Built-in Component, tenemos el ~TransitionList~, que es un compon
 
 Se puede usar de la siguiente forma:
 
-```vue
+```html
 <template>
   <TransitionGroup name="list" tag="ul">
     <li v-for="item in items" :key="item">

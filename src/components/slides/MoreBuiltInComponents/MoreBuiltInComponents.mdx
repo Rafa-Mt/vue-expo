@@ -4,11 +4,13 @@ import App from './App.vue'
 import ExampleWrapper from '../../ExampleWrapper.vue'
 import PageView from '../../../views/PageView.vue'
 
+<PageView>
+
 # Built-in Components: KeepAlive y Teleport
 
 Para empezar, tenemos el componente ~KeepAlive~ que nos permite mantener el estado de un componente incluso si este es desmontado. Esto es útil para mantener el estado de un componente cuando se navega entre rutas.
 
-```vue
+```html
 <component :is="activeComponent" />
 ```
 
@@ -18,7 +20,7 @@ Para empezar, tenemos el componente ~KeepAlive~ que nos permite mantener el esta
 
 En este ejemplo, ~activeComponent~ retorna el componente que queremos renderizar. Si queremos que los datos no se pierdan al desmontarlo, podemos envolverlo con ~KeepAlive~ para que su estado se mantenga.
 
-```vue
+```html
 <KeepAlive>
   <component :is="activeComponent" />
 </KeepAlive>
@@ -30,7 +32,7 @@ En este ejemplo, ~activeComponent~ retorna el componente que queremos renderizar
 
 Esto se encarga de guardar todo lo relacionado con el estado del componente, como los datos, el ciclo de vida, etc., en el cache, para lo que se puede utilizar ~include~: un array de nombres de componentes que se deben mantener en el cache, o ~exclude~: un array de nombres de componentes que no se deben mantener en el cache.
 
-```vue
+```html
 // String delimitado por comas
 
 <KeepAlive include="a,b">
@@ -46,7 +48,7 @@ Esto se encarga de guardar todo lo relacionado con el estado del componente, com
 
 O también se le puede dar un máximo de instancias que guarde antes de eliminar la más antigua.
 
-```vue
+```html
 <KeepAlive :max="10">
   <component :is="activeComponent" />
 </KeepAlive>
@@ -56,7 +58,7 @@ Ya para culminar se tiene ~Teleport~, un componente que nos permite renderizar u
 
 El componente ~Teleport~ es capaz de teletransportar una parte del código del programa de Vue a otro lugar del DOM donde sea más necesario visualmente. Un ejemplo sería el siguiente con un modal:
 
-```vue
+```html
 <script setup>
 import { ref } from 'vue'
 
@@ -96,7 +98,7 @@ Aplicado de la siguiente forma:
 
 Con esto se podría romper fácilmente el modal al tocar el div padre, pero con ~Teleport~ se puede solucionar esto.
 
-```vue
+```html
 <button @click="open = true">Open Modal</button>
 
 <Teleport to="body">
@@ -112,3 +114,5 @@ Con esto se podría romper fácilmente el modal al tocar el div padre, pero con 
 </ExampleWrapper>
 
 Con esto se está teletransportando el modal al final del body, lo que permite que el modal no se rompa al tocar el div padre.
+
+</PageView>

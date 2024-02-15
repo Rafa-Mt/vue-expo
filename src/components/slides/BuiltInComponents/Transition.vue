@@ -21,4 +21,7 @@ const show = ref(false)
 .v-leave-to {
   opacity: 0;
 }
+p {
+  margin-top: 20px;
+}
 </style>
