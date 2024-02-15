@@ -1,0 +1,707 @@
+import ExampleWrapper from "../../ExampleWrapper.vue";
+import PageView from "../../../views/PageView.vue";
+import Charger from "./Charger.vue"
+import ListWrapper from "./ListWrapper.vue"
+import propDrilling from "./prop-drilling.png"
+import provideInject from "./provide-inject.png"
+
+<PageView> 
+
+# SFCs: Single File Components
+
+Vue ofrece la ventaja de poder **encapsular** todos los elementos de un componente en un solo archivo, estos archivos contienen la extension ~.vue~.
+
+Los componentes constan de 3 partes: **Templates, Styles, y Scripts**
+
+```html
+<!-- Charger.vue -->
+<script setup>
+
+import { ref } from 'vue'
+
+const count = ref("#".repeat(15));
+function removeCharge() {
+    if (count.value.length < 1) return;
+    count.value = count.value.slice(1,count.value.length);
+} 
+
+</script>
+
+<template>
+    <div class="count">
+        Charge: <strong>[{{ count }}]</strong>
+    </div>
+    <button 
+        @click="removeCharge()"
+        class="remove"
+    > Remove charge </button>
+</template>
+
+<style> 
+    .remove {
+        margin: 5px;
+        background-color: #41B883;
+        color: #f3f3f3;
+        border-radius: 5px;
+        width: 150px;
+        height: 25px;
+    }
+</style>
+```
+
+```html
+<!-- En el componente padre -->
+<Charger />
+```
+
+<ExampleWrapper>
+    <Charger/ >
+</ExampleWrapper>
+
+# Registro de componentes
+
+En vue existen dos formas de registrar componentes para su uso, el registro **global** o **local**.
+
+## Registro Global
+
+Un componente registrado **Globalmente** se puede usar en las templates de cualquier otro dentro de su aplicación, y se hace de la siguiente forma:
+
+```js
+import Sidebar from './components/Sidebar.vue';
+
+app.component('Sidebar', Sidebar);
+```
+
+Y para varios componentes
+```js
+app.component('Sidebar', Sidebar)
+    .component('Navbar', Navbar)
+    .component('Header', Header)
+    .component('Footer', Footer)
+```
+
+## Registro Local
+
+Un componente registrado **Localmente** solo esta disponible dentro del componente que lo importa, esta importacion se realiza dentro del ~\<script setup\>~
+
+```html
+<script setup>
+
+import Parent from './ParentComponent.vue';
+
+</script>
+
+<template>
+    <div class="wrapper">
+        <Parent />
+    </div>
+</template>
+```
+
+# Props
+
+Los componentes de Vue pueden recibir atributos aportados por su componente padre al ser creados, estos deben ser declarados explicitamente dentro del ~\<script setup\>~
+
+```html
+<!-- En el componente hijo -->
+<script setup>
+
+const props = defineProps(['textSize', 'textValue'])
+
+console.log(props.textSize);
+</script>
+````
+
+```html
+<!-- En el componente padre -->
+<Child :text-size="3" text-value="hello" />
+```
+
+## Name Casting en los props
+
+Es una buena práctica declarar los props dentro de los componentes utilizando ~camelCase~, ya que estos nos permiten utilizar sus nombres directamente y no tener que llamarlas como *property keys*. El caso es diferente al pasar propiedades desde tags HTML, ya que la buena práctica es pasarlos en formato ~kebab-case~
+
+## Tipos de datos como props
+
+Para que vue pueda recibir como prop cualquier tipo de datos que no sea String, se debe de usar la directiva ~v-bind~ o su shorthand ~:~ antes de cada prop
+
+### Number
+```html
+<Post :views="45"/>
+
+<Post :views="post.views">
+```
+
+### Boolean
+```html
+<!-- Si la prop esta configurada como booleano -->
+<!-- pasarla sin ningun argumento se evaluará como "true" -->
+<Post is-visible/>
+
+<Post :is-visible="false">
+<Post :is-visible="post.isVisible">
+```
+
+### Array
+```html
+<Post :tags="['vue', 'framework', 'betterThanReact']"/>
+
+<Post :tags="post.tags">
+```
+
+### Object
+```html
+<Post :author="{
+    name: 'Juan Garcia',
+    company: 'FerreJuan'
+}"/>
+
+<Post :author="post.author">
+```
+
+## Configuracion de las props
+
+Un componente puede definir las props que recibe como un objeto en vez de un arreglo de Strings, esto permite configurar las caracteristicas de los datos que se le pasan al componente
+
+```html
+<script setup> 
+defineProps({
+    textSize: Number,
+    textValue: String,
+});
+</script>
+```
+
+## Mutación de props
+
+Las props en Vue son todas ~readonly~, lo cual implica que estas no pueden ser mutadas de ninguna forma, esto es para prevenir que un componente hijo pueda alterar el estado de su padre
+
+```html
+<!-- ❌ Error: Las props son readonly -->
+<script setup>
+
+const props = defineProps(['text']);
+
+props.text = 'hello';
+
+</script>
+```
+
+## Validaciones de props
+
+```html
+<script setup> 
+
+const props = defineProps({
+    // Solo valida el tipo
+    amount: Number,
+    //  Varios posibles tipos para la propiedad
+    size: [String, Number],
+    // Requerido
+    name: {
+        type: String,
+        required: true
+    };
+    // Valor por defecto
+    registerDate: {
+        type: Date,
+        default: Date.now();
+    };
+    // Objeto con valor por defecto
+    dir: {
+        type: Object,
+        default(rawProps) {
+            return { state:"", city:"", street:"", roomNumber:"" }
+        }
+    }
+    // Validación personalizada
+    email: {
+        type: String,
+        validator(value, props) {
+            const regex = 
+            /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+
+            return regex.test(value);
+        }
+    }
+    // Función con valor por defecto
+    comportamiento: {
+        type: Function,
+        default() {
+            return "comportamiento por defecto";
+        }
+    }
+});
+
+</script>
+```
+### Detalles sobre las validaciones
+* El código dentro de ~defineProps()~ no puede acceder a ninguna variable del ~\<script setup\>~
+* Todas las props son opcionales, a menos que tengan la propiedad ~\{required: true\}~
+* Si un valor ~default~ es especificado, sera utilizado cuando la propiedad este ausente en el componente, o cuando explícitamente reciba ~undefined~ como valor
+* Las propiedades de tipo booleano serán evaluadas como ~false~ si no son recibidas con el componente, para evitar este comportamiento se le puede asignar un valor por defecto, por ejemplo ~\{default: undefined\}~ para que la propiedad se comporte como no-booleana
+
+# Eventos
+
+Un componente puede heredar eventos de su padre y llamarlos dentro de su template, se realiza con el método ~$emit~
+```html
+<!-- Componente Hijo -->
+<template>
+    <button @click="$emit('clickEvent')">Click me</button>
+</template>
+```
+
+```html
+<!-- Componente Padre -->
+<script setup>
+    function callback() {
+        alert('Clicked button')
+    }
+</script>
+<template>
+    <Child @click-event="callback" />
+</template>
+```
+
+Tambien se pueden declarar los eventos como funciones flecha en el mismo ~template~
+
+```html
+<template>
+    <Child @click-event="() => { alert('Clicked button') }">
+</template>
+```   
+
+Los eventos pueden contener ciertos modificadores, por ejemplo ~.once~ hace que el evento solo se pueda llamar una vez
+```html
+<script setup>
+
+function loadOnce() {
+    ...
+}
+
+</script>
+<template>
+    <Child @click-event.once="$emit('loadOnce')" />
+</template>
+```
+
+[Lista completa de modificadores de funciones](https://www.w3schools.com/vue/vue_event-modifiers.php)
+
+## Argumentos para eventos
+
+En el método emit, el primer argumento es siempre el nombre de la funcion a evaluar, y todos los siguinetes se pasan a la misma funcion como argumentos de esta.
+
+```html
+<template> 
+    <button @click="$emit('increaseBy', 1)">
+        Increase by 1
+    </button>
+</template>
+```
+
+## Declaraciones explícitas de eventos
+
+Un componente puede declarar los ~emits~ que recibe al igual que las ~props~, desde el ~\<script setup\>~ utilizando ~defineEmits([...])~, este metodo retorna la propia funcion ~emit~ para que pueda ser usada dentro del script
+
+```html
+<script setup>
+// NOTA: defineEmits() no se debe llamar dentro de una función.
+// Siempre desde el scope mas alto del <script setup> 
+const emit = defineEmits(['buttonClick', 'buttonHover']);
+
+funcion buttonClick() {
+    emit('buttonClick');
+}
+
+</script>
+```
+
+## Validaciones de eventos
+
+Al igual que con las ~props~, los eventos se pueden declarar como objetos, permitiendo añadirles funciones para validar los argumentos que se le pasan al evento. Esto se hace asignandole una funcion que retorna un valor booleano que indica si los datos son válidos o no.
+
+```html
+<script setup>
+
+const emit = defineEmits({
+    // Sin validación
+    buttonClick: null,
+
+    buttonSubmit: ({email, password}) => {
+        if (!(email && password)) {
+            console.warn("invalid data");
+            return false;
+        }
+        return true;
+    }
+
+    function submitForm(email, password) {
+        emit('buttonSubmit', { email, password });
+    }
+});
+
+</script>
+```
+
+# Fallthrough Attributes
+
+Un "Atributo Fallthrough" es un dato, ya sea como atributo común o como ~v-on~ que es recibido por un componente, pero no se encuentra entre las ~props~ o ~emits~ declaradas por el mismo, como por ejemplo los atributos ~class~, ~id~ y ~style~.  
+
+Todos los atributos se pueden acceder desde la variable ~$attrs~ y se pueden desactivar de la siguiente forma:
+
+```html
+<script setup>
+
+defineOptions({
+    inheritAttrs: false
+});
+
+</script>
+```
+
+## Herencia en ~single root elements~
+
+Cuando Vue renderiza un ~single root element~, estos atributos seran añadidos automáticamente al elemento.
+
+```html
+<!-- Componente Hijo -->
+<template>
+    <button>Click me<button>
+</template>
+```
+
+```html
+<!-- Componente padre-->
+<template>
+    <Child class="large" />
+</template>
+```
+
+```html
+<!-- Elemento final en el DOM -->
+<button class="large">Click me</button>
+```
+
+### Combinaciones de ~class~ y ~style~
+
+Si el elemento raíz del componente ya tiene atributos ~class~ o ~style~, estos se van a combinar con los valores heredados del componente padre
+
+```html
+<!-- Componente Hijo -->
+<template>
+    <button class="button">Click me<button>
+</template>
+```
+
+```html
+<!-- Componente padre-->
+<template>
+    <Child class="large" />
+</template>
+```
+
+```html
+<!-- Elemento final en el DOM -->
+<button class="button large">Click me</button>
+```
+
+En caso de que el elemento raíz sea otro componente, los Fallthrough Attributes se le pasarán automáticamente a este.
+
+## Herencia en ~multi-root elements~
+
+A diferencia de los ~single root elements~, los componentes con varios elementos raíz no tienen un comportamiento, debe de especificarse que elemento heredará esos atributos usando ~$attrs~. 
+
+Por ejemplo, supongamos que tenemos un componente ~\<Page/\>~
+
+```html
+<!-- Page.vue -->
+
+<template>
+    <Header />
+    <Main />
+    <Footer />
+</template>
+```
+
+Para especificar que se quiere que ~\<Main /\>~ herede los atributos, se utiliza ~v-bind~
+
+```html
+<!-- Page.vue -->
+
+<template>
+    <Header />
+    <Main v-bind="$attrs" />
+    <Footer />
+</template>
+```
+
+# Slots
+
+Los slots son la forma de vue de permitir pasar "Contenido" a los componentes, en forma de HTML.
+
+```html
+<!-- Componente Padre -->
+<template>
+    <CustomButton>
+        Click Me
+    </CustomButton>
+</template>
+```
+
+```html
+<!-- CustomButton.vue -->
+<template>
+    <button class="custom-button">
+        <slot></slot>
+    </button>
+</template>
+```
+
+```html
+<!-- Elemento final en el DOM -->
+<button class="custom-button">
+    Click me
+</button>
+```
+
+## Contenido por defecto en Slots
+
+Para añadir contenido por defecto (el cual se muestra cuando el componente padre no aporta nada al Slot), es tan simple como poner ese contenido dentro de las etiquetas del Slot.
+
+```html
+<button class="submit">
+    <slot>Submit</slot>
+</button>
+```
+
+## Slots nombrados
+
+En el caso de que se necesiten varios slots en un mismo componente, se pueden nombrar los slots para poder posicionarlos correctamente.
+
+```html
+<!-- Layout.vue -->
+<template>
+    <div class="container">
+        <header>
+            <slot name="header"></slot>
+        </header>
+        <main>
+            <slot></slot>
+        </main>
+        <footer>
+            <slot name="footer"></slot>
+        </footer>
+    </div>
+    </template>
+```
+
+Para pasar contenido a estos slots nombrados, se debe de "envolver" el contenido en un ~\<template\>~ nombrado con la directiva ~v-slot~ o su atajo ~#~
+
+```html
+<template>
+    <Layout>
+        <template #header>
+            ...
+        </template>
+        <template #default>
+            ...
+        </template>
+        <template #footer>
+            ...
+        </template>
+    </Layout>
+</template>
+```
+
+Un slot sin nombre puede recibir un template con nombre "default" o puede utilizar el contenido que no este dentro de un  ~\<template\>~ de forma implícita.
+
+```html
+<template>
+    <Layout>
+        <template #header>
+            ...
+        </template>
+        
+        ...
+
+        <template #footer>
+            ...
+        </template>
+    </Layout>
+</template>
+```
+
+## Props en slots
+
+Los slots no tienen acceso a estado en el componente que los va a reemplazar, pero permiten pasar props a traves de ellos utilizando ~v-bind~ y ~v-slot~
+
+### Para un slot sin nombrar
+```html
+<!-- Reply.vue -->
+<div>
+  <slot :text="message" :count="1"></slot>
+</div>
+```
+
+```html
+<Reply v-slot="slotProps">
+    {{ slotProps.text }} - {{ slotProps.count }}
+</Reply>
+```
+
+### Para un slot nombrado
+```html
+<Layout>
+  <template #header="headerProps">
+    {{ headerProps }}
+  </template>
+
+  <template #default="defaultProps">
+    {{ defaultProps }}
+  </template>
+
+  <template #footer="footerProps">
+    {{ footerProps }}
+  </template>
+</Layout>
+```
+
+## Ejemplo: Lista dinámica.
+
+```html
+<!-- ListWrapper.vue -->
+<script setup>
+
+import FancyList from "./FancyList.vue"
+
+const url = 'https://jsonplaceholder.typicode.com/users?_limit=5'
+
+<script/>
+
+<template>
+    <FancyList :url="url">
+        <template #item="{name, email, phone}">
+            <div class="item">
+                <p>{{ name }}</p>
+                <p class="meta"> {{ email }} | {{ phone }} </p>
+            </div>
+        </template>
+    </FancyList>
+</template>
+```
+
+```html
+<!-- FancyList.vue -->
+<script setup>
+
+import {ref} from 'vue';
+
+const props = defineProps(['url']);
+
+const items = ref([]);
+
+const getItems = async (url) => {
+    const rs = await fetch(url)
+    const json = await rs.json();
+    return json;
+};
+
+getItems(props.url)
+.then((data) => items.value = data);
+
+<script/>
+
+<template>
+  <ul>
+    <li v-if="!items.length">
+      Loading...
+    </li>
+    <li v-for="item in items">
+      <slot name="item" v-bind="item"/>
+    </li>
+  </ul>
+</template>
+```
+
+<ExampleWrapper>
+    <ListWrapper />
+</ExampleWrapper>
+
+# Provide / Inject
+
+## El problema de los componentes: Prop Drilling
+
+Vue ofrece una solucion sencilla a este problema, las funciones ~provide()~ e ~inject()~
+
+## Provide
+
+Al crear ~provide~ utilizando la funcion con el mismo nombre,  se debe de dar como argumentos un par de clave-valor, para poder capturar el dato en componentes hijos.
+
+```html
+<script setup>
+import { provide } from 'vue'
+
+provide('key', 'value')
+</script>
+```
+
+### App-level Provide 
+
+Estos provides estan disponibles en toda la aplicación
+
+```js
+import { createApp, provide } from 'vue'
+
+const app = createApp({})
+
+app.provide('key', 'value')
+```
+
+## Inject 
+
+Para recibir datos de un ~provide~, se utiliza la funcion ~inject~
+
+```html
+<script setup>
+import { inject } from 'vue'
+
+const value = inject('key', 'defaultValue')
+</script>
+```
+
+### Inject con Reactividad
+
+Se recomienda que al trabajar con providers, las mutaciones a los estados reactivos se mantengan dentro del mismo en forma de funcion
+
+```html
+<!-- Dentro del componente proveedor -->
+<script setup>
+import { provide, ref } from 'vue'
+
+const location = ref('North Pole')
+
+function updateLocation(loc) {
+  location.value = loc
+}
+
+provide('location', {
+  location,
+  updateLocation
+})
+</script>
+```
+
+```html
+<!-- Dentro del componente recibidor -->
+<script setup>
+import { inject } from 'vue'
+
+const { location, updateLocation } = inject('location')
+</script>
+
+<template>
+  <button @click="updateLocation">{{ location }}</button>
+</template>
+```
+
+</PageView>

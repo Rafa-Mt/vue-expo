@@ -1,5 +1,6 @@
 import Reactividad from "../components/slides/Reactividad/Reactividad.mdx";
 import Directivas from "../components/slides/Directivas/Directivas.mdx";
+import Componentes from "../components/slides/Componentes/Componentes.mdx";
 
 export default [
   {
@@ -12,4 +13,9 @@ export default [
     path: "/directivas",
     component: Directivas,
   },
+  {
+    name: "Componentes",
+    path: "/componentes",
+    component: Componentes
+  }
 ];
