@@ -1,0 +1,264 @@
+import ExampleWrapper from '../../ExampleWrapper.vue'
+import PageView from '../../../views/PageView.vue'
+import Sum from './Sum.vue'
+import { ref } from 'vue'
+
+<PageView>
+
+# Reactividad a profundidad
+
+Como se mencionó antes, la reactividad es la habilidad de nuestra aplicacion de reflejar cambios en su **estado** en el DOM. Pero un punto importante es que debe poder hacerlo de forma **declarativa**.
+
+Veamos un ejemplo:
+
+<ExampleWrapper>
+    <Sum />
+</ExampleWrapper>
+
+Cuando cambiamos el valor de ~A~ o ~B~, el resultado cambia automáticamente. Pero Javascript no funciona así por defecto:
+
+```javascript
+let A = 1
+let B = 2
+let C = A + B
+
+console.log(C) // 3
+
+A = 2
+console.log(C) // Todavía 3
+```
+
+Cuando cambiamos el valor de ~A~, ~C~ no cambia de forma automática. 
+
+Definamos algunos conceptos, pero primero escribamos una función que nos deje modificar el valor
+
+```javascript
+let C
+
+function update() {
+    C = A + B
+}
+```
+
+- ~update()~ es una función que produce efectos secundarios, o un **effect**
+- ~A~ y ~B~ son **dependencias** del efecto. Se dice que el efecto es **suscriptor** de ~A~ y ~B~
+
+## Guardar el código
+
+### Problema
+
+Para empezar a construir un sistema reactivo, necesitamos guardar como calculamos estas propiedades que queremos que cambien de forma automática.
+
+### Solución
+
+Usaremos una función ~track~ que permitirá decirle a la aplicación que queremos guardar una porción de código. 
+
+```javascript
+let product = {
+    price: 5,
+    quantity: 2
+}
+let total
+
+let update = () => {
+    total = product.price * product.quantity
+}
+
+track() // guardar el efecto (update)
+update() // llamar al efecto 
+```
+
+La forma en la que Vue guarda estos efectos es con un ~Set~. Una de las razones más importantes de usar un ~Set~ es que no permite duplicados.
+
+```javascript
+let dep = new Set()
+
+function track() {
+    dep.add(effect)
+}
+```
+
+~dep~ representa una serie de dependencias que deben volver a ejecutarse cuando cambian los valores. Es sencillo ver entonces que necesitamos una función ~trigger~ que nos permita ejecutar todas las dependencias guardadas.
+
+```javascript
+function trigger() {
+    dep.forEach(effect => {
+        effect()
+    })
+}
+```
+Ahora podemos mantener actualizado el valor del total
+  
+```javascript
+product.price = 10
+console.log(total) // 10
+trigger()
+console.log(total) // 20
+```
+
+### Manejar múltiples objetos reactivos y propiedades
+
+A medida que la aplicación crece, Vue necesita almacenar todos esos efectos en una variable global, donde pueda observar todos los efectos y transformaciones posibles. 
+
+Vue utiliza ~WeakMap~ Llamado ~targetMap~ para hacer esto. El tipo de ~targetMap~ es:
+
+```javascript
+WeakMap<target, Map<key, Set<effect>>>
+```
+
+Dentro de ~targetMap~ se almacenan muchos ~Map~ correspondientes a cada objeto reactivo. A su vez, cada ~Map~ almacena un ~Set~ de efectos correspondientes a cada propiedad.
+
+Por simplicidad, imaginemos que existe una función ~getDepsForProperty()~ que nos devuelve el ~Set~ de efectos correspondientes a una propiedad. Veamos como cambian ~track~ y ~trigger~:
+
+```javascript
+function track(target, key) {
+    let dep = getDepsForProperty(target, key)
+    dep.add(effect)
+}
+```
+Es importante mencionar que si no existe un set de dependencias para la propiedad, vue lo creará, esta lógica está dentro de ~getDepsForProperty()~. Veamos ahora ~trigger~:
+
+```javascript
+function trigger(target, key) {
+    let dep = getDepsForProperty(target, key)
+    dep.forEach(effect => {
+        effect()
+    })
+}
+```
+
+Ahora en el programa original debemos cambiar un par de cosas
+
+```javascript
+let product = {
+    price: 5,
+    quantity: 2
+}
+let otroObjeto = {
+    propiedad: 1
+}
+let total
+
+let update = () => {
+    total = product.price * product.quantity
+}
+
+track(product, 'quantity') // guardar el efecto (update)
+update() // llamar al efecto 
+
+product.quantity = 3
+console.log(total) // 10
+trigger(product, 'quantity')
+console.log(total) // 15
+
+```
+## Llamada manual a ~track~ y ~trigger~
+
+### Problema
+
+Actualmente, estamos llamando manualmente a ~track~ y ~trigger~. Esto no es ideal, pues quisieramos una forma de saber cuando una debemos almacenar y ejecutar un efecto de forma automática.
+
+### Solución
+
+Debemos encontrar una forma de llamar ~track~ cuando se lee una propiedad (quizas cuando ~update~ se llama por primera vez), y ~trigger~ cuando se modifica una propiedad.
+
+En JavaScript, es imposible conocer el cuando una variable primitiva cambia de valor. Es por eso que Vue utiliza ~ref~ y ~reactive~ para poder hacerlo.
+- ~ref~ utiliza **getters** y **setters**.
+- ~reactive~ utiliza **Proxies**.
+
+Veamos como funcionan estas dos funciones de forma simplificada:
+
+```javascript
+function reactive(obj) {
+  return new Proxy(obj, {
+    get(target, key) {
+      return target[key]
+    },
+    set(target, key, value) {
+      target[key] = value
+      trigger(target, key)
+    }
+  })
+}
+
+function ref(value) {
+  const refObject = {
+    get value() {
+      track(refObject, 'value')
+      return value
+    },
+    set value(newValue) {
+      value = newValue
+      trigger(refObject, 'value')
+    }
+  }
+  return refObject
+}
+```
+
+Si usamos estos conceptos, veamos como cambia nuestro ejemplo:
+
+```javascript
+let product = reactive({
+    price: 5,
+    quantity: 2
+})
+let total = 0
+
+let update = () => {
+    total = product.price * product.quantity
+}
+update() // como se leen price y quantity, se llama a track
+console.log(total) // 10
+product.quantity = 3 // como se modifica quantity, se llama a trigger
+console.log(total) // 15
+```
+
+Ahora el último problema con este ejemplo es que si tenemos varios ejemplos, una sola función ~update~ no es suficiente. Necesitamos una forma de poder definir efectos de forma más sencilla.
+
+Necesitamos una función ~cuandoCambianDeps(update)~ que ejecute ~update~ cuando cambien sus dependencias. 
+
+```javascript
+let activeEffect
+function cuandoCambianDeps(update) {
+  const effect = () => {
+    activeEffect = update
+    update()
+    activeEffect = null
+  }
+  effect()
+}
+```
+Y ahora podemos hacer un pequeño cambio a ~track~:
+
+```javascript
+function track(target, key) {
+  if (activeEffect) {
+    let dep = getDepsForProperty(target, key)
+    dep.add(activeEffect)
+  }
+}
+```
+
+Si recordamos las lecciones sobre reactividad, quizas notemos que ~cuandoCambianDeps~ es muy similar a ~watchEffect~. De hecho, ~watchEffect~ es una versión más avanzada de ~cuandoCambianDeps~. Veamos por última vez el ejemplo:
+
+```javascript
+let product = reactive({
+    price: 5,
+    quantity: 2
+})
+let total = ref(0)
+
+watchEffect(() => {
+    total.value = product.price * product.quantity
+})
+
+console.log(total.value) // 10
+product.quantity = 3
+console.log(total.value) // 15
+```
+
+
+
+
+</PageView>

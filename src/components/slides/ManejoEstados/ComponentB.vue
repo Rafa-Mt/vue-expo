@@ -1,17 +1,18 @@
 <script setup>
-import { ref } from 'vue'
-
-const count = ref(0)
-
+    import {store} from './store.js'
 </script>
 
 <template>
-  <button @click="count++">
-    # de clicks: {{ count }}
-  </button>
+    <div class="component">
+        <p>Desde B: {{ store.count }}</p>
+        <button @click="store.count--">Disminuye la cuenta</button>
+    </div>
 </template>
-
 <style scoped>
+    .component {
+        padding: 10px;
+        border: 1px solid var(--color-border);
+    }
     button {
         all: unset;
         padding: 5px;
@@ -21,6 +22,9 @@ const count = ref(0)
         border: 1px solid var(--color-border);
         cursor: pointer;
         transition: all .2s ease;
+    }
+    p {
+      margin: 5px;
     }
     button:hover {
       background-color: #f6cece;

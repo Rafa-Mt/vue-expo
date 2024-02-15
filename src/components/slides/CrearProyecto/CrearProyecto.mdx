@@ -1,0 +1,83 @@
+import PageView from '../../../views/PageView.vue'
+
+<PageView>
+
+# Crear una Aplicacion Vue.js
+Todas las applicaciones en vue empieza creando una instancia con la funcion *createApp* como ser puede ver aqui:
+
+```
+import { createApp } from 'vue'
+
+const app = createApp({
+  /* root component options */
+})
+```
+
+## EL Componente root
+
+El objeto que pasamos a *createApp* es en realidad un componente. Cada aplicación requiere un "componente raíz" que puede contener otros componentes como hijos.
+
+Si estás usando Componentes de Archivo Único (SFC), normalmente importas el componente raíz desde otro archivo, como por ejemplo:
+
+```
+import { createApp } from 'vue'
+// import the root component App from a single-file component.
+import App from './App.vue'
+
+const app = createApp(App)
+```
+
+
+Si bien muchos ejemplos en esta guía solo necesitan un componente único, la mayoría de las aplicaciones reales están organizadas en un árbol de componentes anidados y reutilizables. Por ejemplo, el árbol de componentes de una aplicación de tareas pendientes podría verse así:
+
+```
+App (root component)
+├─ TodoList
+│  └─ TodoItem
+│     ├─ TodoDeleteButton
+│     └─ TodoEditButton
+└─ TodoFooter
+   ├─ TodoClearButton
+   └─ TodoStatistics
+```
+
+## Montando el App
+
+Una instancia de la aplicación no renderizará nada hasta que se llame a su método .mount(). Este método espera un argumento "contenedor", que puede ser un elemento DOM real o una cadena de selector:
+
+```
+<div id="app"></div>
+```
+```
+app.mount('#app')
+```
+
+El contenido del componente raíz de la aplicación se renderizará dentro del elemento contenedor. El elemento contenedor en sí no se considera parte de la aplicación.
+
+El método *.mount()* siempre debe llamarse después de que se hayan realizado todas las configuraciones de la aplicación y el registro de recursos. Además, ten en cuenta que su valor de retorno, a diferencia de los métodos de registro de recursos, es la instancia del componente raíz en lugar de la instancia de la aplicación.
+
+### Plantilla del Componente Raíz en el DOM
+
+La plantilla para el componente raíz suele ser parte del componente en sí, pero también es posible proporcionar la plantilla por separado escribiéndola directamente dentro del contenedor de montaje, como por ejemplo:
+
+```
+<div id="app">
+  <button @click="count++">{{ count }}</button>
+</div>
+```
+```import { createApp } from 'vue'
+
+const app = createApp({
+  data() {
+    return {
+      count: 0
+    }
+  }
+})
+
+app.mount('#app')
+```
+
+Vue utilizará automáticamente el HTML interno del contenedor como plantilla si el componente raíz aún no tiene una opción de plantilla.
+
+</PageView>

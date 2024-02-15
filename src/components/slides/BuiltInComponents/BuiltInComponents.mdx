@@ -1,0 +1,245 @@
+import Transition from './Transition.vue'
+import Transition2 from './Transition2.vue'
+import Animation from './Animation.vue'
+import TransitionModes from './TransitionModes.vue'
+import App from './App.vue'
+import TransitionList from './TransitionList.vue'
+import ExampleWrapper from '../../ExampleWrapper.vue'
+import PageView from '../../../views/PageView.vue'
+import OpacityImg from './Opacity.png'
+
+<PageView>
+
+# Built-in Components: Transition y TransitionGroup
+
+Como su nombre indica, los built-in components ya están disponibles en el apartado de template del programa sin tener que preregistrarlo.
+
+Vue cuenta con 2 componentes built-in que ayudan con las transiciones y animaciones cada vez que se produce un cambio de estado.
+
+El primero de estos es ~Transition~, que aplica animaciones cuando un elemento o componente está entrando o saliendo del DOM. Esta entrada o salida del DOM se puede identificar de diferentes formas, como las directivas ~v-if~ y ~v-show~, o mediante la propiedad ~is~ de los componentes dinámicos, etc.
+
+Viendo un ejemplo muy sencillo:
+
+```html
+<script setup>
+import { ref } from 'vue'
+
+const show = ref(true)
+</script>
+
+<template>
+  <button @click="show = !show">Click to Fade</button>
+  <Transition>
+    <p v-if="show">Hello World!</p>
+  </Transition>
+</template>
+
+<style>
+.v-enter-active,
+.v-leave-active {
+  transition: opacity 0.8s ease;
+}
+
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
+}
+</style>
+```
+
+<ExampleWrapper>
+<Transition/>
+</ExampleWrapper>
+
+## Transiciones en CSS
+
+Existen 6 clases que se aplican a los elementos que entran o salen del DOM:
+
+<ExampleWrapper style="display:grid;place-items:center">
+  <img src={OpacityImg} alt="Transiciones" width={500}/>
+</ExampleWrapper>
+
+
+1. ~v-enter-from~: Aplicada justo antes que el elemento se inserte, y removida un frame luego de insertarse.
+
+2. ~v-enter-active~: Aplicada durante la transición de entrada, y removida cuando la transición termine.
+
+3. ~v-enter-to~: Aplicada justo después que el elemento se inserte, y removida un frame luego de que la transición termine.
+
+4. ~v-leave-from~: Aplicada justo cuando una transición de salida inicie, y removida tras un frame.
+
+5. ~v-leave-active~: Aplicada durante la transición de salida, y removida cuando la transición termine.
+
+6. ~v-leave-to~: Aplicada justo después que el elemento salga, y removida un frame luego de que la transición termine.
+
+Además, ~v-enter-active~ y ~v-leave-active~ permiten especificar diferentes curvas de animación en las transiciones, como se verá más adelante. Primero, hay que saber también que se le pueden aplicar nombres a las transiciones con la propiedad ~name~:
+
+```html
+<Transition name="slide">
+  ...
+</Transition>
+```
+
+Con esto, las clases ahora tienen el prefijo ~slide~ en vez de ~v~; y usando esto, se puede dar un ejemplo más avanzado:
+
+```html
+<template>
+	<button @click="show = !show">Click to Slide</button>
+  <Transition name="slide">
+    <p v-if="show">Goodbye World!</p>
+  </Transition>
+</template>
+
+<style>
+.slide-enter-active {
+  transition: all 0.3s ease-out;
+}
+
+.slide-fade-leave-active {
+  transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
+.slide-enter-from,
+.slide-leave-to {
+  transform: translateX(20px);
+  opacity: 0;
+}
+</style>
+
+```
+<ExampleWrapper>
+<Transition2/>
+</ExampleWrapper>
+
+## Animaciones en CSS
+
+Las animaciones nativas de CSS se aplican de la misma forma que las transiciones, y normalmente se aplican solo con ~v-enter-active~ y ~v-leave-active~:
+
+```html
+<template>
+	<button @click="show = !show">Click to Bounce!</button>
+  <Transition name="bounce">
+    <p v-if="show" style="margin-top: 20px; text-align: center;">
+      Texto de Ejemplo
+    </p>
+  </Transition>
+</template>
+
+<style>
+.bounce-enter-active {
+  animation: bounce-in 0.8s;
+}
+.bounce-leave-active {
+  animation: bounce-in 0.5s reverse;
+}
+@keyframes bounce-in {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(2.5);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+</style>
+```
+
+<ExampleWrapper>
+<Animation/>
+</ExampleWrapper>
+
+También pueden tenerse animaciones y transiciones trabajando en conjunto, y se pueden aplicar a cualquier elemento o componente que se esté insertando o eliminando del DOM. Solo se tiene que especificar una o la otra para Vue, con la propiedad ~type~:
+
+```html
+<Transition type="animation">...</Transition>
+```
+
+Además, se pueden crear transiciones reutilizables con el sistema de Componentes de Vue. Esto hará de Wrapper para la transición y pase lo que necesite el slot:
+
+```html
+<template>
+  <Transition
+    name="my-transition"
+    @enter="onEnter"
+    @leave="onLeave">
+    <slot></slot> //Se le pasa el contenido del Slot...
+  </Transition>
+</template>
+
+<style>
+  // CSS necesario de la transición...  
+</style>
+```
+
+Y luego el componente se puede usar como cualquier otro:
+
+```html
+<my-transition>
+  <div v-if="show">Hello World!</div>
+</my-transition>
+```
+
+Existen también multiples modos de transición en Vue, que se pueden especificar con la propiedad ~mode~:
+
+```html
+<Transition mode="out-in">
+  ...
+</Transition>
+```
+
+<ExampleWrapper>
+<TransitionModes/>
+</ExampleWrapper>
+
+Por último, se pueden aplicar transiciones entre componentes dinámicos, como en el siguiente ejemplo:
+
+```html
+<template>
+	<label>
+    <input type="radio" v-model="activeComponent" :value="CompA"> A
+  </label>
+  <label>
+    <input type="radio" v-model="activeComponent" :value="CompB"> B
+  </label>
+  <Transition name="fade" mode="out-in">
+    <component :is="activeComponent"></component>
+  </Transition>
+</template>
+```
+<ExampleWrapper>
+<App/>
+</ExampleWrapper>
+
+Pasando a otro Built-in Component, tenemos el ~TransitionList~, que es un componente que se encarga de aplicar transiciones a los elementos de una lista cuando se insertan o eliminan. Tiene varias diferencias con respecto a ~Transition~ en que no acepta modos de transición y los atributos de la lista siempre necesitan un atributo ~key~ para identificarlos.
+
+Se puede usar de la siguiente forma:
+
+```html
+<template>
+  <TransitionGroup name="list" tag="ul">
+    <li v-for="item in items" :key="item">
+      {{ item }}
+    </li>
+  </TransitionGroup>
+</template>
+
+<style>
+  .list-enter-active,
+    .list-leave-active {
+      transition: all 0.5s ease;
+    }
+    .list-enter-from,
+    .list-leave-to {
+      opacity: 0;
+      transform: translateX(30px);
+    }
+</style>
+```
+
+<ExampleWrapper>
+<TransitionList/>
+</ExampleWrapper>
+
+</PageView>

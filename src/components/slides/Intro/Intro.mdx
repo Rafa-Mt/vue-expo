@@ -1,0 +1,62 @@
+import PageView from "../../../views/PageView.vue";
+
+<PageView>
+
+# Introducción
+
+Aqui tenemos informacion basica importante antes de comenzar a trabajar con Vue
+
+## Que es Vue?​
+Vue es un framework de JavaScript para construir interfaces de usuario. Se basa en HTML, CSS y JavaScript estándar y proporciona un modelo de programación declarativo y basado en componentes que te ayuda a desarrollar interfaces de usuario de manera eficiente, ya sean simples o complejas.
+
+## Para que se utiliza
+Vue.js se puede utilizar para crear una amplia variedad de aplicaciones web, desde sitios web estáticos hasta aplicaciones de una sola página (SPAs) complejas. Algunas de las áreas donde Vue.js brilla son:
+
+- Desarrollar interfaces de usuario interactivas y dinámicas. 
+- Crear aplicaciones web con una experiencia de usuario fluida y receptiva. 
+- Construir SPAs con funcionalidades avanzadas como enrutamiento y gestión de estado.
+
+## Ventajas de usar Vue.js a diferencia de otros Frameworks como React
+
+Vue.js, como React es un framework popular para construir interfaces de usuario, pero hay algunas diferencias clave que pueden influir en tu decisión:
+
+- Curva de aprendizaje: Vue.js generalmente se considera más fácil de aprender que React, especialmente para principiantes en JavaScript. Tiene una muy buena codumentacion Oficial
+- Enfoque: Vue.js tiene un enfoque más ligero y modular, mientras que React se basa en un sistema de componentes más complejo.
+- Tamaño: La biblioteca central de Vue.js es más pequeña que la de React, lo que puede ser una ventaja para proyectos pequeños.
+
+
+## Por qué Vue.js es considerado Progresivo
+
+Vue es un framework y ecosistema que cubre la mayoría de las características comunes necesarias para el desarrollo frontend. Sin embargo, la web es extremadamente diversa y las cosas que construimos en ella pueden variar drásticamente en forma y escala. Teniendo esto en cuenta, Vue está diseñado para ser flexible y adaptable de forma incremental. Dependiendo de tu caso de uso, Vue se puede utilizar de diferentes maneras:
+
+- Mejorar el HTML estático sin un paso de compilación: Agrega interactividad y dinámica a páginas web existentes sin necesidad de configuraciones complejas.
+- Incrustar como componentes web en cualquier página: Crea componentes reutilizables que funcionan en cualquier sitio web, independientemente del framework utilizado.
+- Aplicación de una sola página (SPA): Desarrolla aplicaciones interactivas que se cargan una vez y actualizan el contenido dinámicamente, sin recargar la página completa.
+- Fullstack / Renderizado del lado del servidor (SSR): Genera HTML en el servidor para mejorar el SEO y la carga inicial, y luego usa Vue para la interactividad del cliente.
+- Jamstack / Generación de sitios estáticos (SSG): Construye sitios web pre-renderizados para un rendimiento y seguridad óptimos, y usa Vue para agregar funcionalidades dinámicas específicas.
+- Dirigido a escritorio, móvil, WebGL e incluso la terminal: Crea interfaces de usuario atractivas y funcionales para diferentes plataformas y contextos.
+
+A pesar de la flexibilidad, el conocimiento central sobre cómo funciona Vue se comparte en todos estos casos de uso. Incluso si eres un principiante ahora, los conocimientos   adquiridos te serán útiles a medida que crezcas para abordar objetivos más ambiciosos en el futuro. Si eres un veterano, puedes elegir la manera óptima de aprovechar Vue en función de los problemas que intentas resolver, manteniendo la misma productividad. Por eso llamamos a Vue "El framework progresivo": es un framework que puede crecer contigo y adaptarse a tus necesidades.
+
+## Componente de un solo archivo (Single file Component)
+
+En la mayoría de los proyectos de Vue que utilizan herramientas de compilación, creamos componentes de Vue utilizando un formato de archivo similar al HTML llamado Componente de archivo único (también conocido como archivos .vue, abreviado como SFC por su sifras en ingles). Un SFC de Vue, como su nombre lo indica, encapsula la lógica del componente (JavaScript), la plantilla (HTML) y los estilos (CSS) en un solo archivo. Aqui es donde se trabajara todo el codigo que vamos a implementar
+Aqui un ejemplo de un SFC:
+```html
+<script setup>
+import { ref } from 'vue'
+const count = ref(0)
+</script>
+
+<template>
+  <button @click="count++">Count is: {{ count }}</button>
+</template>
+
+<style scoped>
+button {
+  font-weight: bold;
+}
+</style>
+```
+
+</PageView>

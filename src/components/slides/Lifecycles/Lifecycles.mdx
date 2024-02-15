@@ -1,0 +1,468 @@
+import ExampleWrapper from "../../ExampleWrapper.vue";
+import PageView from "../../../views/PageView.vue";
+import Awrap from "./Awrap.vue";
+import OnRenderT from "./OnRenderT.vue";
+
+<PageView>
+
+# Lifecycle Hooks
+
+## **onMounted**
+
+  
+
+El hook ~~onMounted~~ se utiliza   para ejecutar código después de que el componente ha sido montado en el DOM. Es útil para realizar tareas como inicializar variables, realizar solicitudes a servidores, o manipular el DOM una vez que el componente esté listo para ser visto por el usuario.
+
+  
+
+```js
+
+<script setup>
+import { ref, onMounted } from 'vue'
+
+const el = ref()
+
+onMounted(() => {
+  el.value // <div>
+})
+</script>
+
+<template>
+  <div ref="el"></div>
+</template>
+  
+
+```
+
+Este hook es esencial cuando necesitas realizar operaciones que dependen del DOM o datos externos una vez que el componente se ha renderizado completamente en la interfaz de usuario. Por ejemplo, podrías usar este hook para cargar datos de un servidor o para inicializar plugins de terceros que necesiten acceso al DOM.
+
+  
+
+
+
+## **onUpdated**
+
+  
+
+El hook ~~onUpdated~~ se ejecuta después de que el componente y su vista se han actualizado. Es útil para realizar acciones que necesitan acceso al DOM o a datos actualizados después de que se ha completado la actualización del componente.
+
+  
+
+```js
+<script setup>
+import { ref, onUpdated } from 'vue'
+
+const count = ref(0)
+
+onUpdated(() => {
+  console.log(document.getElementById('count').textContent)
+})
+</script>
+
+<template>
+  <button id="count" v-on:click="count++">{{ count }} </button>
+</template>
+```
+
+
+
+Puedes utilizar este hook para manipular el DOM después de que el componente se haya actualizado, como actualizar el estado de una animación o interactuar con elementos del DOM que han cambiado.
+
+  
+
+
+## **onUnmounted**
+
+  
+
+El hook ~~onUnmounted~~ se ejecuta después de que el componente ha sido desmontado del DOM. Es útil para realizar tareas de limpieza final, liberar recursos y realizar acciones finales antes de que el componente deje de existir
+
+```js
+<script setup>
+import { onUnmounted } from 'vue';
+
+onUnmounted(() => {
+	console.log('El componente ha sido desmontado');
+});
+
+</script>
+
+```
+
+  
+
+Puedes utilizar este hook para realizar tareas de limpieza que deben llevarse a cabo después de que el componente ya no esté en uso, como eliminar event listeners o liberar recursos de memoria.
+
+  
+
+
+  
+
+## **onBeforeMount**
+
+
+El hook ~~onBeforeMount~~ se ejecuta justo antes de que el componente se monte en el DOM. Es útil para realizar tareas de configuración o de inicialización antes de que el componente se haga visible para el usuario.
+
+```js
+<script setup>
+import { onBeforeMount } from 'vue';
+
+onBeforeMount(() => {
+	console.log('El componente está a punto de ser montado')
+});
+</script>
+```
+
+
+## **onBeforeUpdate**
+
+  
+
+El hook ~~onBeforeUpdate~~ se ejecuta justo antes de que el componente se actualice y vuelva a renderizarse. Es útil para realizar acciones como limpiar o preparar datos antes de que se produzca la actualización del componente
+
+```js
+<script setup>
+import {ref, onBeforeUpdate } from 'vue';
+
+const count = ref(0);
+
+const previousCount = ref(null);
+
+onBeforeUpdate(() => {
+
+previousCount.value = count.value;
+});
+;
+</script>
+```
+
+  
+  
+  
+
+Puedes utilizar este hook para realizar operaciones como comparar datos antes y después de la actualización del componente o para realizar cálculos basados en propiedades o estado local.
+
+  
+
+
+## **onBeforeUnmount**
+
+  
+
+El hook ~~onBeforeUnmount~~ se ejecuta justo antes de que el componente sea desmontado del DOM. Es útil para limpiar recursos, cancelar suscripciones, o realizar otras tareas de limpieza antes de que el componente desaparezca.
+
+  
+
+```js
+<script setup>
+
+import { ref, onMounted, onBeforeUnmount } from 'vue';
+
+const intervalId = ref(null);
+
+
+onMounted(() => {
+
+ // Iniciar un temporizador cuando el componente se monta
+ intervalId.value = setInterval(() => {
+
+ console.log('Temporizador en ejecución...');
+
+ }, 1000);
+
+});
+
+  
+
+onBeforeUnmount(() => {
+
+  // Limpiar el temporizador cuando el componente se desmonta
+
+  clearInterval(intervalId.value);
+
+});
+
+</script>
+
+```
+
+
+  
+
+Puedes utilizar este hook para limpiar tareas que ya no son necesarias, como cancelar temporizadores o suscripciones a eventos.
+
+  
+
+
+## **onErrorCaptured**
+
+  
+
+El hook ~~onErrorCaptured~~ se utiliza para capturar errores que se producen dentro del componente y sus descendientes durante la renderización, la actualización o el manejo de eventos. Permite manejar errores de manera centralizada en el árbol de componentes.
+
+```js
+</script>
+import { onErrorCaptured } from 'vue';
+
+  
+
+onErrorCaptured((error, instance, info) => {
+ console.error('Se produjo un error en el componente', instance);
+ console.error('Error:', error);
+ console.error('info error',info)
+
+});
+<script setup>
+  
+
+```
+
+  
+
+Este hook proporciona una manera de manejar errores de forma centralizada en tu aplicación Vue. Puedes utilizarlo para enviar errores a servicios de registro, mostrar mensajes de error al usuario, o realizar otras acciones específicas según el tipo de error y el contexto en el que se produjo.
+
+  
+
+El hook ~~onErrorCaptured~~ solo captura errores que ocurren durante la renderización del componente, en un watcher o en un ciclo de vida del componente.
+
+  
+  
+
+  
+
+## **onRenderTracked**
+
+  
+
+El hook ~~onRenderTracked~~ se utiliza para realizar un seguimiento de las dependencias reactivas que se están utilizando durante la renderización del componente. Se ejecuta cuando una dependencia reactiva es rastreada durante la renderización.
+
+```js
+<script setup>
+  import { ref, onRenderTracked } from 'vue';
+
+  const count = ref(0);
+
+  onRenderTracked(event => {
+    console.log('Dependencia de renderizado rastreada:', event);
+  });
+</script>
+  
+<template>
+  <button v-on:click="count++">Haz clic en mí</button>
+  <p>Has hecho clic {{ count }} veces</p>
+</template>
+
+```
+nos daria un resultado como este:
+
+
+
+```html
+Dependencia de renderizado rastreada: {effect: ReactiveEffect, target: RefImpl, type: 'get', key: 'value'}
+```
+  
+<ExampleWrapper>
+  <OnRenderT/>
+</ExampleWrapper>
+
+Este hook es útil para depurar y comprender qué dependencias reactivas están siendo utilizadas durante la renderización de un componente. Puedes utilizarlo para realizar tareas de registro o para detectar posibles problemas de rendimiento relacionados con el seguimiento de dependencias.
+
+  
+
+
+## **onRenderTriggered**
+
+  
+
+El hook ~~onRenderTriggered~~ se utiliza para realizar un seguimiento de las dependencias reactivas que causaron que el componente se renderizara nuevamente. Se ejecuta cuando una dependencia reactiva causa una renderización del componente.
+
+```js
+<script setup>
+  import { ref, onRenderTriggered } from 'vue';
+
+  const count = ref(0);
+
+  onRenderTriggered(event => {
+    console.log('Dependencia de renderizado disparada:', event);
+  });
+</script>
+  
+<template>
+  <button v-on:click="count++">Haz clic en mí</button>
+  <p>Has hecho clic {{ count }} veces</p>
+</template>
+```
+
+```html	  
+Dependencia de renderizado disparada: {type: "set", target: Proxy, key: "value", oldValue: 0, newValue: 1}
+```
+
+  
+
+Este hook es útil para comprender qué cambios en las dependencias reactivas están provocando la renderización de un componente. Puedes utilizarlo para depurar y optimizar el rendimiento de tus componentes Vue, identificando qué cambios están causando actualizaciones innecesarias en la interfaz de usuario.
+
+  
+
+
+## **onActivated**
+
+  
+
+El hook ~~onActivated~~ se ejecuta cuando un componente vuelva a estar activo. Esto ocurre cuando el componente es activado como resultado de la activación de su componente padre.
+
+  
+
+```js
+
+<script setup>
+
+import { onActivated } from 'vue';
+
+  
+
+onActivated(() => {
+
+ console.log('Componente activado');
+
+});
+
+</script>
+  
+
+```
+
+  
+
+Este hook es útil para realizar tareas específicas que deben ocurrir cuando un componente se vuelve a activar, como la carga de datos desde un servidor o la reinicialización de ciertos estados.
+
+  
+
+
+  
+
+## **onDeactivated**
+
+  
+
+El hook ~~onDeactivated~~ se ejecuta cuando un componente deja de estar activo. Esto ocurre cuando el componente es desactivado como resultado de la desactivación de su componente padre.
+
+  
+
+```js
+<script setup>
+
+import { onDeactivated } from 'vue';
+
+  
+
+onActivated(() => {
+
+ console.log('Componente desactivado');
+
+});
+
+</script>
+  
+
+```
+
+  
+
+Este hook es útil para realizar tareas específicas que deben ocurrir cuando un componente deja de estar activo, como limpiar estados o liberar recursos que ya no son necesarios mientras el componente está inactivo
+
+  
+
+
+  
+  
+
+## **onServerPrefetch**
+
+  
+
+El hook ~~onServerPrefetch~~ se utiliza en componentes asincrónicos para manejar la lógica de precarga del lado del servidor (SSR). Se ejecuta cuando un componente está siendo precargado en el servidor antes de ser enviado al cliente.
+
+  
+
+```js
+<script setup>
+
+import { onServerPrefetch } from 'vue';
+
+import { fetchData } from './api'; // Supongamos que esta función devuelve una promesa que resuelve los datos
+
+  
+
+let data = null;
+
+onServerPrefetch(async () => {
+
+ data = await fetchData();
+
+});
+
+</script>
+  
+
+```
+
+  
+
+Este hook es útil para realizar operaciones de precarga de datos o de configuración específicas para el SSR antes de que el componente sea renderizado en el cliente. Es especialmente útil cuando se trabaja con aplicaciones Vue que utilizan renderizado del lado del servidor.
+
+
+
+## Ejemplo
+
+```js
+<template>
+  <div> 
+    <p ref="paragraphRef">El botón ha sido presionado {{ count }} veces.</p>   
+    <button id="count" v-on:click="count++">{{ count }}</button>
+  </div>
+</template>
+  
+<script setup>
+  import { ref, onMounted, onBeforeUpdate, onUpdated, onBeforeUnmount, onUnmounted, onBeforeMount } from 'vue';
+  
+  // Variables reactivas
+  const count = ref(0);
+  const paragraphRef = ref(null);
+  // Hooks
+
+  onBeforeMount(() => {
+    console.log('Antes de montar el componente(onBeforeMount)', count.value);
+    
+  });
+
+  onMounted(() => {
+    console.log('El componente ha sido montado (onMounted)', count.value);
+  });
+  
+  onBeforeUpdate(() => {
+    console.log('Antes de actualizar el componente(onBeforeUpdate)', count.value);
+    console.log('InnerText ', paragraphRef.value.innerText);
+  });
+  
+  onUpdated(() => {
+    console.log('El componente ha sido actualizado(onUpdated)', count.value);
+    console.log('InnerText:', paragraphRef.value.innerText);
+  });
+  
+  onBeforeUnmount(() => {
+    console.log('Antes de desmontar el componente(onBeforeUnmount)', count.value);
+  });
+  
+  onUnmounted(() => {
+    console.log('El componente ha sido desmontado(onUnmounted)',  count.value);
+  });
+
+</script>
+```
+  
+
+<ExampleWrapper>  
+ <Awrap/>
+</ExampleWrapper> 
+
+</PageView>

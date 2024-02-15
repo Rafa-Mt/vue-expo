@@ -1,0 +1,210 @@
+import ExampleWrapper from "../../ExampleWrapper.vue";
+import PageView from "../../../views/PageView.vue";
+import OneWayDataFlowImg from "./one-way-data-flow.png";
+import ComponentA from "./ComponentA.vue";
+import ComponentB from "./ComponentB.vue";
+import { store } from "./store";
+
+
+<PageView>
+# Manejo de estados
+
+En sentido estricto, cada componente de Vue maneja su estado de forma separada. Por ejemplo en un componente simple.
+
+```html
+<script setup>
+    import { ref } from 'vue';
+
+    // estado
+    const count = ref(0);
+
+    // acciones
+    const increment = () => count.value++;
+
+</script>
+
+<!-- vista -->
+<template> {{ count }} </template>
+
+```
+
+Donde: 
+
+- El **estado**, la fuente de verdad que guía el app;
+- La **vista**, la representación visual del estado;
+- Las **acciones**, las posibles formas de cambiar el estado reaccionando a inputs de la vista.
+
+Esta es una representación simple del concepto de *flujo unidireccional de datos*
+
+<ExampleWrapper style="display:grid; place-items:center">
+    <img src={OneWayDataFlowImg} alt="flujo unidireccional de datos" width={300}/>
+</ExampleWrapper>
+
+Este modelo simple deja de funcionar cuando tenemos varios componentes que necesitan compartir estado. En estos casos, la solucion más común es mover el estado a un componente padre y pasar el estado y las acciones como *props* a los componentes hijos.
+
+El problema con este enfoque es que rápidamente se vuelve muy complejo y difícil de mantener. Los componentes pueden llegar a tener muchas propiedades innecesarias. 
+
+## Solución simple: manejo de estados con la Reactivity API
+
+Usando ~reactive()~, podemos extraer un estado compartido a su propio archivo e importarlo en cualquier componente que lo necesite. 
+
+```js
+// store.js
+import { reactive } from 'vue';
+
+export const store = reactive({
+    count: 0,
+})
+```
+
+```html
+<!-- componente A -->
+<script setup>
+    import {store} from './store.js'
+</script>
+
+<template>
+    <p>Desde A: {{ store.count }}</p>
+    <button @click="store.count++">Aumenta la cuenta</button>
+</template>
+```
+
+```html
+<!-- componente B -->
+<script setup>
+    import {store} from './store.js'
+</script>
+
+<template>
+    <p>Desde B: {{ store.count }}</p>
+    <button @click="store.count--">Disminuye la cuenta</button>
+</template>
+```
+
+
+<ExampleWrapper>
+    <ComponentA/>
+    <ComponentB/>
+</ExampleWrapper>
+
+A medida que nuestra aplicación crece, y más componentes requiren acceso a un estado compartido, seguramente requeriremos de un control más minuscioso sobre la mutación del estado. Para esto podemos definir acciones dentro de las *stores*.
+
+```js
+import { reactive } from "vue";
+
+
+export const store = reactive({
+    count: 0,
+    increment() {
+        this.count++;
+    },
+    decrement() {
+        this.count--;
+    },
+    reset() {
+        this.count = 0;
+    },
+})
+```
+
+Ahoa en el ~ComponentA~, por ejemplo:
+
+```html
+<script setup>
+    import {store} from './store.js'
+</script>
+<template>
+    <p>Desde A: {{ store.count }}</p>
+    <button @click="store.increment()">Aumenta la cuenta</button>
+</template>
+```
+
+## Solución avanzada: Pinia
+
+Aunque para proyectos pequeños, el manejo de estados con la Reactivity API es suficiente, para proyectos más grandes, es recomendable usar una librería de manejo de estados como 
+<a href="https://pinia.vuejs.org/">Pinia</a>.
+
+Algunas ventajas incluyen:
+- Convenciones y estructuras más rígidias, importante para la colaboración en equipos grandes.
+- Soporte para la devtools de Vue.
+- Soporte para SSR
+
+
+
+### Definiendo una ~store~ con Pinia
+
+Desde Vue 3, podemos usar una sintaxis similar a la del Composition API para definir ~stores~ con Pinia.
+
+
+```js
+// store.js
+import { defineStore } from 'pinia';
+import { ref, computed } from 'vue';
+
+export const useExampleStore = defineStore("example", () => {
+    const count = ref(0);
+    const name = ref("Jubert");
+    const doubleCount = computed(() => count.value * 2);
+
+    function increment() {
+        count.value++;
+    }
+
+    return {
+        count,
+        name,
+        doubleCount,
+        increment,
+    }
+})
+```
+Donde: 
+- ~ref()~ son propiedades de estado
+- ~computed()~ son ~getters~
+- ~function()~ son acciones
+
+### Usando la ~store~ en un componente
+
+```html
+<script setup>
+import {useExampleStore} from '@/stores/store'
+
+// ahora podemos acceder a todas las propiedades
+const store = useExampleStore();
+</script>
+
+```
+
+### Destructurar una store
+Las propiedades reactivas (~ref~, ~computed~) de las ~stores~ no pueden ser simplemente destructuradas.
+
+```html
+<script setup>
+import {useExampleStore} from '@/stores/store'
+const store = useExampleStore();
+
+// Rompe la reactividad
+const {count, doubleCount, name} = store;
+
+</script>
+```
+
+Para solucionar esto, podemos usar la función ~storeToRefs~ de Pinia.
+
+```html
+<script setup>
+import {useExampleStore} from '@/stores/store'
+import { storeToRefs } from 'pinia';
+
+const store = useExampleStore();
+
+// Ahora las propiedades son reactivas
+const {count, doubleCount, name} = storeToRefs(store);
+
+// las acciones pueden deestructurarse sin problemas
+const {increment} = store;
+</script>    
+
+```
+
+</PageView>

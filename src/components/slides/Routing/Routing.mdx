@@ -1,0 +1,187 @@
+import ExampleWrapper from "../../ExampleWrapper.vue";
+import PageView from '../../../views/PageView.vue'
+
+
+<PageView>
+
+# Vue Router
+
+## ~router-link~ y ~router-view~
+
+El componente ~router-link~ genera un enlace, que permite a Vue Router cambiar la URL sin cargar la pagina, manejar la generacion de URL y su codificacion. El componente ~router-view~ mostrara el componente correspondiente a la URL, este componente tiene la oportunidad de ser colocado en cualquier lugar de la aplicacion para poder adaptarlo al diseño.
+
+## ~createRouter()~
+
+Esta funcion de Vue Router permite crear una instancia de Router que puede ser usada en una aplicacion de Vue. Esta funcion recibe como parametro un objeto de configuracion del router:
+
+- history: este contiene como valor una funcion, donde usualmente se utiliza ~createWebHashHistory()~ para aplicaciones que no utilizan servidor, crea un historial hash(#) lo cual permite simular una URL completa y asi la aplicacion no necesita recargarse al momento de que la URL sufra algun cambio.
+- routes: este atributo contiene un objeto que contiene el ~path~ que contiene la URL de la ruta, ~name~ que contiene un nombre opcional para la ruta y finalmente ~component~ que es el componente que se caragara al momento de acceder a la URL establecida en ~path~
+
+```javascript
+import { createRouter, createWebHashHistory } from 'vue-router'
+
+//Se debe importar el componente a utilizar en el router
+
+const router = createRouter({
+  history: createWebHashHistory(),
+  routes: [
+    {
+      path: "/",
+      name: "Home",
+      component: Home
+    },
+    {...},
+    {...}
+  ]
+});
+
+export default router;
+```
+
+Para utilizar **router** en nuestra aplicacion, se debe importar en el archivo donde se este creando la aplicacion, de la siguiente manera:
+
+```javascript
+import { createApp } from 'vue';
+import App from ./App.vue
+import router from './index.js'
+
+createApp(App).use(router).mount("#app");
+```
+
+# Rutas enlazadas
+
+Algunas aplicaciones estan compuestas por componentes anidados en multiples niveles de profundidad, tomando en cuenta esto se presenta el siguiente ejemplo:
+
+```html
+<div id="app">
+  <router-view></router-view>
+</div>
+```
+
+```javascript
+const User = {
+  template: "<div>User {{ $route.params.id }}</div>",
+};
+
+//Esta variable es pasada al `createRouter`
+const routes = [{ path: "/user/:id", component: User }];
+```
+
+El ~router-view~ en esta aplicacion es un ~router-view~ de primer nivel, es decir, renderizara el componente que coincida con la ruta de primer nivel. Sin embargo un componente ya renderizado puede contener su propio ~router-view~, por ejemplo:
+
+```javascript
+const User = {
+  template: `
+    <div class="user">
+      <h2>User {{ $route.params.id }}</h2>
+      <router-view><router-view>
+    </div>
+  `,
+};
+```
+
+Para renderizar componentes dentro de este ~router-view~ anidado, necesitamos usar el atributo children en cualquier ruta que necesitemos:
+
+```javascript
+const routes = [
+  {
+    path: "/user/:id",
+    component: User,
+    children: [
+      {
+        //UserProfile sera renderizado dentro del User router-view
+        //cuando /user/:id/profile coincida
+
+        path: "profile",
+        component: UserProfile,
+
+        //En este caso no renderizara nada dado que ninguna ruta anidada coincide
+        //en tal caso se sugiere colocar un path vacio, asi UserProfile
+        //se renderizara cuando /user/:id coincida
+      },
+      {
+        path: "post",
+        component: UserPosts,
+      },
+    ],
+  },
+];
+```
+
+Notese que las rutas anidadas que comienzen con ~/~ se trataran como rutas raiz. Esto permite aprovechar el rendimiento de componentes sin tener que utilizar una URL anidada.
+
+Otra forma de renderizar componentes en los ~router-view~ anidados, es omitiendo el componente principal. Esto puede resultar util para agrupar rutas con un prefijo de ruta comun, por ejemplo:
+
+```javascript
+const routes = [
+  {
+    path: "/admin",
+    children: [
+      { path: " ", component: AdminOverView },
+      { path: "users", component: AdminUserList },
+      { path: "users/:id", component: AdminUserDetails },
+    ],
+  },
+];
+```
+
+Como el componente padre no especifica un componente de ruta, el ~router-view~ de primer nivel omitira el padre y solo usara el componente del hijo relevante
+
+# Guardias de Programacion
+
+Como sugiere el nombre, las protecciones de navegacion proporcionadas por Vue Router se utilizan principalmente para proteger las navegaciones mediante redirecciones o cancelaciones.
+Hay varias formas de conectarse al proceso de navegacion de rutas:
+
+- globalmente.
+- por ruta.
+
+## Global Before Guards (GBG)
+
+se puede registrar un GBG usando ~router.beforeEach~:
+
+```javascript
+const router = createRouter({ ... })
+
+router.beforeEach((to, from) => {
+  //La logica va aqui
+
+  //retornar explicitamente false para cancelar la navegacion
+  return false
+})
+```
+
+Toda funcion de guardia recibe 2 argumentos:
+
+- ~to~: la ubicacion de la ruta destino a la que se navega.
+- ~from~: la ubicacion de la ruta actual desde donde se navega.
+
+Y opcionalmente puede devolver cualquiera de los siguientes valores:
+
+- ~false~: cancela la navegacion actual. Si se cambio la URL del navegador (ya sea manualmente por el usuario o mediante el boton de atras), se restablecera a la ruta del ~from~.
+- Una ruta: redirecciona a una ubicacion diferente pasando una ubicacion de ruta. La navegacion actual se elimina y se crea una nueva con la misma ~from~.
+
+```javascript
+router.beforeEach(async (to, from) => {
+  if (!isAuthenticated && to.name !== "Login") {
+    return { name: "Login" };
+  }
+});
+```
+
+## Guardia por ruta
+
+Se puede definir guardias ~beforeEnter~ directamente en el objeto de configuracion de una ruta:
+
+```javascript
+const routes = [
+  {
+    path: "/users/:id",
+    component: UserDetails,
+    beforeEnter: (to, from) => {
+      return false;
+    },
+  },
+];
+```
+
+</PageView>

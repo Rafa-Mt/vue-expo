@@ -1,0 +1,87 @@
+import ButtonComposition from './ButtonComposition.vue'
+import ExampleWrapper from '../../ExampleWrapper.vue'
+import PageView from '../../../views/PageView.vue'
+
+<PageView>
+
+# Options API vs. Composition API.
+
+### Existen dos formas de programar usando Vue, que son los estilos de API, de Opciones y de Composición. Veamos sus diferencias:
+
+## Options API.
+
+En la Options API, se define la lógica de un componente mediante objetos que realizan las opciones, como en este caso son ~data~, ~methods~ y ~mounted~. A su vez, las propiedades definidas por opciones se ven modificadas por ~this~ dentro de las funciones, apuntando a esa instancia:
+
+```html
+    <script>
+    export default {
+
+    data() {
+        return {
+        count: 0
+        }
+    },
+
+    methods: {
+        increment() {
+        this.count++
+        }
+    },
+
+    mounted() {
+        console.log(`The initial count is ${this.count}.`)
+    }
+    }
+    </script>
+
+    <template>
+    <button @click="increment">Click me: {{ count }}</button>
+    </template>
+```
+
+Este es el más antiguo de los dos estilos de API de Vue, y si bien es funcional y utilizable a día de hoy, no lo es tanto como ellos predican. Veamos por qué:
+
+## Composition API.
+
+La Composition API es una agrupación de APIs que nos permite programar en Vue utilizando funciones importadas en vez de declarar opciones. Incluye la Reactivity API y más APIs que entre ellas permiten usar funciones como ~ref()~, ~onMounted()~, ~onUpdated()~, ~onErrorCaptured()~, ~inject()~ y muchas más.
+
+Aquí además, se empieza con ~\<script setup\>~ para distinguir que es la Composition API y optimizar el sistema al código de forma acorde.
+
+Veamos el mismo ejemplo esta vez con el Composition API:
+
+```html
+
+    <script setup>
+    import { ref, onMounted } from 'vue'
+
+    // estado reactivo
+    const count = ref(0)
+
+    // funciones que mutan el estado
+    function increment() {
+        count.value++
+    }
+
+    // lifecycle hooks
+    onMounted(() => {
+        console.log(`The initial count is ${count.value}.`)
+    })
+    </script>
+
+    <template>
+        <button @click="increment">Click me: {{ count }}</button>
+    </template>
+```
+<ExampleWrapper>
+  <ButtonComposition/>
+</ExampleWrapper>
+
+## ¿Qué API elegir?
+
+La Options API se enfoca en el concepto de instancias de componentes (~this~ en este ejemplo) lo cual puede parecer más familiar para los programadores de lenguajes de POO y el sistema de clases.
+
+La Composition API, por su parte, se centra en manejar la reactividad de Vue y manejarla utilizando funciones importadas en conjunto. Es más flexible y requiere entendimiento de la reactividad en Vue, pero permite una mejor organización y reutilización de código.
+
+La programación del pasado siempre suele ser más rígida, como la Options API, la cual sigue siendo funcional y preferible para algunos pero la gran mayoría de la gente no puede pasar por alto la flexibilidad de la Composition API, más nueva y optimizada. Su forma de organización la hace la mejor opción para construir aplicaciones enteras de SFCs con Vue. Es por esta misma razón que será la API utilizada por el resto de la exposición.
+
+</PageView>
