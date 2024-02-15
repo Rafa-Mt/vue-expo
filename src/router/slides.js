@@ -8,6 +8,7 @@ import PropiedadesComputadas from "../components/slides/PropiedadesComputadas/Pr
 import Watchers from "../components/slides/Watchers/Watchers.mdx";
 import Directivas from "../components/slides/Directivas/Directivas.mdx";
 import Lifecycles from "../components/slides/Lifecycles/Lifecycles.mdx";
+import Reusabilidad from "../components/slides/Reusabilidad/Reusabilidad.mdx";
 
 Intro.displayName = "Introducción";
 Instalacion.displayName = "Instalación";
@@ -71,6 +72,13 @@ export default [
     name: "Lifecycle Hooks",
     path: "/lifecycles",
     component: Lifecycles,
+  },
+  {
+    name: "Reusabilidad",
+    path: "/reusabilidad",
+    component: Reusabilidad
   }
+  
+  
 
 ];
